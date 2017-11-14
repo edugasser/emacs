@@ -1,97 +1,106 @@
-(add-to-list 'load-path "/home/edu/.emacs.d/lisp")
-(require 'web-mode)
-(autoload 'php-mode "php-mode" "Major mode for editing PHP code." t)
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
-(add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
+(load "package")
+(package-initialize)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(setq package-archive-enable-alist '(("melpa" deft magit)))
 
-(defun xah-syntax-color-hex ()
-  "Syntax color text of the form 「#ff1100」 in current buffer.
-URL `http://ergoemacs.org/emacs/emacs_CSS_colors.html'
-Version 2015-06-11"
-  (interactive)
-  (font-lock-add-keywords
-   nil
-   '(("#[abcdef[:digit:]]\\{6\\}"
-      (0 (put-text-property
-          (match-beginning 0)
-          (match-end 0)
-          'face (list :background (match-string-no-properties 0)))))))
-  (font-lock-fontify-buffer))
+;; DEFINE PACKAGES
+(defvar gasser/packages '(auto-complete
+                          ace-jump-mode
+                          anaconda-mode
+                          fiplr
+                          pylint
+                          jedi
+                          autopair
+                          helm
+                          org
+                          clojure-mode
+                          coffee-mode
+                          importmagic
+                          flycheck
+                          fill-column-indicator
+                          htmlize
+                          magit
+                          marmalade
+                          multiple-cursors
+                          php-mode
+                          py-autopep8
+                          puppet-mode
+                          solarized-theme
+                          web-mode
+                          writegood-mode
+                          yaml-mode)
+  "Default packages")
 
-(add-hook 'css-mode-hook 'xah-syntax-color-hex)
-(add-hook 'php-mode-hook 'xah-syntax-color-hex)
-(add-hook 'html-mode-hook 'xah-syntax-color-hex)
+;; INSTALLING
+(defun gasser/packages-installed-p ()
+  (cl-loop for pkg in gasser/packages
+        when (not (package-installed-p pkg)) do (cl-return nil)
+        finally (cl-return t)))
 
-(toggle-scroll-bar -1)
+(unless (gasser/packages-installed-p)
+  (message "%s" "Refreshing package database...")
+  (package-refresh-contents)
+  (dolist (pkg gasser/packages)
+    (when (not (package-installed-p pkg))
+      (package-install pkg))))
 
+;; INITIAL
+(setq inhibit-splash-screen t
+      initial-scratch-message nil)
+(switch-to-buffer (get-buffer-create "emtpy"))
+(delete-other-windows)
+
+;; APPEARANCE
 (set-face-attribute 'default nil :height 120)
-;(global-set-key (kbd "C-i") 'kill-whole-line)
-;; auto close bracket insertion. New in emacs 24
-;(electric-pair-mode 1)
-(setq show-paren-style 'parenthesis)
-(setq show-paren-stynle 'expression) ; highlight entire
-(setq show-paren-style 'mixed) ; highlight brackets if visible, else entire expression
-;; turn on highlight matching brackets when cursor is on one
-(show-paren-mode 1)
+(toggle-scroll-bar -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(setq column-number-mode t)
+(if window-system
+    (load-theme 'solarized-dark t)
+  (load-theme 'wombat t))
 
-(global-hi-lock-mode 1)
-(set-face-attribute 'default nil :height 118)
+;; MARKING TEXT
+(delete-selection-mode t)
+(transient-mark-mode t)
+(setq x-select-enable-clipboard t)
 
+;; DISPLAY SETTINGS
+(global-linum-mode 1)
+(setq-default frame-title-format "%b (%f)")
+(setq-default indicate-empty-lines t)
+(when (not indicate-empty-lines)
+  (toggle-indicate-empty-lines))
+(require 'fill-column-indicator)
+(setq-default fill-column 79)
+(setq fci-rule-width 1)
+(setq fci-rule-color "darkblue")
+(add-hook 'prog-mode-hook 'fci-mode)
+
+;; INDENTATION
+(setq standard-indent 4)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq indent-line-function 'insert-tab)
 (setq c-default-style "linux")
 (setq c-basic-offset 4)
 (c-set-offset 'comment-intro 0)
-(add-to-list 'load-path "/home/edu/")
+(setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
 
-;; Disable loading of “default.el” at startup,
-;; in Fedora all it does is fix window title which I rather configure differently
-(setq inhibit-default-init t)
+;; BACKUP FILES
+(setq make-backup-files nil)
 
-;; SHOW FILE PATH IN FRAME TITLE
-(setq-default frame-title-format "%b (%f)")
+;; YES / NO
+(defalias 'yes-or-no-p 'y-or-n-p)
 
-; Ver numero columnas
-(setq column-number-mode t)
-; Fordward word
-(global-set-key (kbd "C-q") 'forward-word)
+;; KEY BINDINGS
 
-
-; copy current line
-(defun xah-copy-line-or-region ()
-  "Copy current line, or text selection.
-When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
-
-URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2015-05-06"
-  (interactive)
-  (let (ξp1 ξp2)
-    (if current-prefix-arg
-        (progn (setq ξp1 (point-min))
-               (setq ξp2 (point-max)))
-      (progn (if (use-region-p)
-                 (progn (setq ξp1 (region-beginning))
-                        (setq ξp2 (region-end)))
-               (progn (setq ξp1 (line-beginning-position))
-                      (setq ξp2 (line-end-position))))))
-    (kill-ring-save ξp1 ξp2)
-    (if current-prefix-arg
-        (message "buffer text copied")
-      (message "text copied"))))
-
-(global-set-key (kbd "C-j") 'xah-copy-line-or-region)
-
-; duplicate line
+;;  duplicate line
 (defun duplicate-line()
   (interactive)
   (move-beginning-of-line 1)
@@ -101,170 +110,95 @@ Version 2015-05-06"
   (next-line 1)
   (yank)
 )
+
+(global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "C-;") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-q") 'forward-word)
 (global-set-key (kbd "C-x d") 'duplicate-line)
 
-; undo y redo
+;; UNDO REDO
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "C-r") 'redo)
 
-; anaconda
+;; MISC
+(show-paren-mode t)
+(require 'autopair)
+(setq-default show-trailing-whitespace t)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'prog-mode-hook 'subword-mode)
+
+;; ORG HABIT
+(require 'org)
+(require 'org-install)
+(require 'org-habit)
+(add-to-list 'org-modules "org-habit")
+(setq org-habit-preceding-days 7
+      org-habit-following-days 1
+      org-habit-graph-column 80
+      org-habit-show-habits-only-for-today t
+      org-habit-show-all-today t)
+
+;; TEMPORARY FILES
+(setq backup-directory-alist `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+
+;; AUTOCOMPLETE
+(require 'auto-complete-config)
+(ac-config-default)
+
+;; CONF MODE
+(add-to-list 'auto-mode-alist '("\\.gitconfig$" . conf-mode))
+
+;; WEB MODE
+(add-to-list 'auto-mode-alist '("\\.hbs$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
+
+;; YAML
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+
+;; COFFE SCRIPT
+(defun coffee-custom ()
+  "coffee-mode-hook"
+  (make-local-variable 'tab-width)
+  (set 'tab-width 2))
+
+(add-hook 'coffee-mode-hook 'coffee-custom)
+
+;; JAVASCRIPT MODE
+(defun js-custom ()
+  "js-mode-hook"
+  (setq js-indent-level 2))
+
+(add-hook 'js-mode-hook 'js-custom)
+
+;; MARKDOWN MODE
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.mdown$" . markdown-mode))
+(add-hook 'markdown-mode-hook
+          (lambda ()
+            (visual-line-mode t)
+            (writegood-mode t)
+            (flyspell-mode t)))
+(setq markdown-command "pandoc --smart -f markdown -t html")
+
+;; ANACONDA
 (add-hook 'python-mode-hook 'anaconda-mode)
 
-; utf8
-(set-language-environment 'utf-8)
-; no backup
-(setq backup-directory-alist `(("." . "~/.saves")))
-;Jedi - autocomplete for python
-;(add-hook 'python-mode-hook 'jedi:setup)
-;(setq jedi:complete-on-dot t)
-
-; Num lineas
-(global-linum-mode 1)
-
-; Whitespace
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-;(global-whitespace-mode 1)
-
-;; Fuzzy Search
-(global-set-key (kbd "C-x i") 'helm-locate)
-;(global-set-key (kbd "C-x p") 'helm-projectile)
-(add-to-list 'load-path "/home/edu/helm/")
-(require 'helm-config)
-
-;;;; Tab settings ;;;;
-(setq standard-indent 4)
-;; Tab with
-
-(setq-default tab-width 4)
-;; Tab width is 4
-(setq tab-width 4)
-;; Use spaces always.
-(setq indent-tabs-mode nil)
-
-;(setq-default tab-always-indent t)
-;Jump by 4.
-(setq c-basic-offset 4)
-;this defaulted to 4 and had to be reset to 3.
-(setq perl-indent-level 4)
-;Manually set by x4
-(setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
-
-;; melpa packages
-(require 'package) ;; You might already have this line
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/"))
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize) ;; You might already have this line
-
-(require 'helm-ls-hg)
-
-(add-to-list 'load-path "/home/edu/grizzl")
-(require 'projectile)
-(require 'grizzl)
-(setq projectile-indexing-method 'native)
-;(setq projectile-completion-system 'grizzl)
-(add-to-list 'projectile-globally-ignored-files "*.pyc" "*#")
-(add-to-list 'projectile-globally-ignored-directories ".*")
-(projectile-global-mode)
-
-;; Fuzzy mejorado 2
-(setq fiplr-root-markers '(".hg"))
+;; FUZZY SEARCH
+(setq fiplr-root-markers '(".hg" ".git"))
 (setq fiplr-ignored-globs '((directories (".hg" "uploads"))
                             (files ("*.jpg" "*.pyc" "*.po" "*.png" "*.zip" "*~"))))
 (global-set-key (kbd "C-x p") 'fiplr-find-file)
 
-;; customize window
-(menu-bar-mode -1)
-(tool-bar-mode -1)
 
-;; blank page when init
-(setf inhibit-splash-screen t)
-(switch-to-buffer (get-buffer-create "emtpy"))
-(delete-other-windows)
-
-(require 'fill-column-indicator)
-(setq fci-rule-width 1)
-(setq fci-rule-color "darkblue")
-
-
-;; theme solarized
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(load-theme 'solarized t)
-(setf inhibit-splash-screen t)
-(switch-to-buffer (get-buffer-create "emtpy"))
-(delete-other-windows)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (solarized-dark)))
- '(custom-safe-themes
-   (quote
-    ("c48551a5fb7b9fc019bf3f61ebf14cf7c9cdca79bcb2a4219195371c02268f11" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
- '(safe-local-variable-values (quote ((encoding . utf-8)))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-(setq backup-directory-alist
-          `((".*" . ,temporary-file-directory)))
-    (setq auto-save-file-name-transforms
-          `((".*" ,temporary-file-directory t)))
-
-;(add-hook 'python-mode-hook 'jedi:setup)
-;(setq jedi:complete-on-dot t)                 ; optional
-;(autoload 'jedi:setup "jedi" nil t)
-
-(package-initialize)
-(put 'set-goal-column 'disabled nil)
-
-(defun bf-pretty-print-xml-region (begin end)
-  "Pretty format XML markup in region. You need to have nxml-mode
-http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
-this.  The function inserts linebreaks to separate tags that have
-nothing but whitespace between them.  It then indents the markup
-by using nxml's indentation rules."
-  (interactive "r")
-  (save-excursion
-      (nxml-mode)
-      (goto-char begin)
-      (while (search-forward-regexp "\>[ \\t]*\<" nil t)
-        (backward-char) (insert "\n"))
-      (indent-region begin end))
-    (message "Ah, much better!"))
-
-(add-hook 'prog-mode-hook 'subword-mode)
-
-
-
-
-;; (global-set-key (kbd "C-x b") 'helm-buffers-list)
-;; (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
-;; (global-set-key (kbd "C-x r l") 'helm-bookmarks)
-;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
-
-;;
-;; ace jump mode major function
-;;
+;; ACE MODE
 (autoload
   'ace-jump-mode
   "ace-jump-mode"
   "Emacs quick move minor mode"
   t)
-;; you can select the key you prefer to
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-
-
-
-;;
-;; enable a more powerful jump back function from ace jump mode
-;;
 (autoload
   'ace-jump-mode-pop-mark
   "ace-jump-mode"
@@ -273,20 +207,47 @@ by using nxml's indentation rules."
 (eval-after-load "ace-jump-mode"
   '(ace-jump-mode-enable-mark-sync))
 (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
-
 (global-set-key (kbd "C-ñ") 'ace-jump-line-mode)
 
-;; buffer-move
-(global-set-key (kbd "C-c C-p")    'buf-move-up)
-(global-set-key (kbd "<C-S-down>")   'buf-move-down)
-(global-set-key (kbd "<C-S-left>")   'buf-move-left)
-(global-set-key (kbd "<C-S-right>")  'buf-move-right)
-
+;; MULTIPLE CURSOR
 (require 'multiple-cursors)
 
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 (global-set-key (kbd "C-c w") 'mc/mark-next-like-this)
+
+;; PEP 8
+;(require 'py-autopep8)
+;(add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+
+;; FLYCHECK
+;(require 'flycheck)
+;;(global-flycheck-mode t)
+
+;; IMPORT MAGIC
+(require 'importmagic)
+(add-hook 'python-mode-hook 'importmagic-mode)
+
+
+;; JEDI
+(require 'jedi)
+(add-hook 'python-mode-hook 'jedi:setup)
+(add-hook 'python-mode-hook 'jedi:ac-setup)
+
+;; AUTO GENERATE
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
