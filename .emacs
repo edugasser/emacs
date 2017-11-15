@@ -55,7 +55,7 @@
 (delete-other-windows)
 
 ;; APPEARANCE
-(set-face-attribute 'default nil :height 120)
+(set-face-attribute 'default nil :height 117 :width 'semi-condensed)
 (toggle-scroll-bar -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -77,10 +77,11 @@
 (when (not indicate-empty-lines)
   (toggle-indicate-empty-lines))
 (require 'fill-column-indicator)
-(setq-default fill-column 79)
-(setq fci-rule-width 1)
-(setq fci-rule-color "darkblue")
-(add-hook 'prog-mode-hook 'fci-mode)
+(define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
+(global-fci-mode 1)
+(setq fci-rule-column 80)
+(setq fci-rule-width 2)
+(setq fci-rule-color "darkred")
 
 ;; INDENTATION
 (setq standard-indent 4)
@@ -99,8 +100,6 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; KEY BINDINGS
-
-;;  duplicate line
 (defun duplicate-line()
   (interactive)
   (move-beginning-of-line 1)
@@ -117,15 +116,21 @@
 (global-set-key (kbd "C-x d") 'duplicate-line)
 
 ;; UNDO REDO
-(global-set-key (kbd "C-z") 'undo)
-(global-set-key (kbd "C-r") 'redo)
+(global-set-key (kbd "C-z") 'undo-tree-undo)
+(global-set-key (kbd "M-z") 'undo-tree-redo)
+(global-set-key (kbd "C-x t") 'undo-tree-visualize)
 
 ;; MISC
+(global-set-key (kbd "C-.") 'repeat)
 (show-paren-mode t)
 (require 'autopair)
 (setq-default show-trailing-whitespace t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'prog-mode-hook 'subword-mode)
+(global-subword-mode 1)
+
+;; UTF8
+(set-language-environment 'utf-8)
+(set-keyboard-coding-system 'utf-8)
 
 ;; ORG HABIT
 (require 'org)
@@ -191,7 +196,6 @@
                             (files ("*.jpg" "*.pyc" "*.po" "*.png" "*.zip" "*~"))))
 (global-set-key (kbd "C-x p") 'fiplr-find-file)
 
-
 ;; ACE MODE
 (autoload
   'ace-jump-mode
@@ -212,11 +216,16 @@
 ;; MULTIPLE CURSOR
 (require 'multiple-cursors)
 
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C-x w") 'mc/mark-next-like-this-word)
+(global-set-key (kbd "C-x n") 'mc/mark-more-like-this-extended)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-(global-set-key (kbd "C-c w") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-x m") 'mc/mark-all-like-this)
+(global-set-key (kbd "M-n") 'mc/edit-beginnings-of-lines)
+(global-set-key (kbd "C-M-n") 'mc/edit-ends-of-lines)
+(global-set-key (kbd "M-m") 'mc/mark-all-in-region)
+(global-set-key (kbd "C-x j") 'mc/mark-all-like-this-in-defun)
+(global-set-key (kbd "C-x r m") 'set-rectangular-region-anchor)
 
 ;; PEP 8
 ;(require 'py-autopep8)
@@ -230,11 +239,82 @@
 (require 'importmagic)
 (add-hook 'python-mode-hook 'importmagic-mode)
 
-
 ;; JEDI
 (require 'jedi)
 (add-hook 'python-mode-hook 'jedi:setup)
 (add-hook 'python-mode-hook 'jedi:ac-setup)
+
+
+;; FORMATTING
+(defun prettyxml (begin end)
+  "Pretty format XML markup in region. You need to have nxml-mode
+http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
+this.  The function inserts linebreaks to separate tags that have
+nothing but whitespace between them.  It then indents the markup
+by using nxml's indentation rules."
+  (interactive "r")
+  (save-excursion
+      (nxml-mode)
+      (goto-char begin)
+      (while (search-forward-regexp "\>[ \\t]*\<" nil t)
+        (backward-char) (insert "\n"))
+      (indent-region begin end))
+  (message "Ah, much better!"))
+
+(global-set-key (kbd "C-h") 'prettyxml)
+
+;; FILES
+(defun my/new-scratch ()
+  (interactive)
+  (switch-to-buffer (get-buffer-create  (make-temp-name "new-file-"))))
+(global-set-key (kbd "C-x C-n") 'my/new-scratch)
+
+;; COPY CURRENT LINE
+(defun xah-copy-line-or-region ()
+  "Copy current line, or text selection.
+When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
+
+URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
+Version 2015-05-06"
+  (interactive)
+  (let (ξp1 ξp2)
+    (if current-prefix-arg
+        (progn (setq ξp1 (point-min))
+               (setq ξp2 (point-max)))
+      (progn (if (use-region-p)
+                 (progn (setq ξp1(add-hook 'window-setup-hook 'delete-other-windows) (region-beginning))
+                        (setq ξp2 (region-end)))
+               (progn (setq ξp1 (line-beginning-position))
+                      (setq ξp2 (line-end-position))))))
+    (kill-ring-save ξp1 ξp2)
+    (if current-prefix-arg
+        (message "buffer text copied")
+      (message "text copied"))))
+
+(global-set-key (kbd "C-j") 'xah-copy-line-or-region)
+
+;; DUPLICATE LINE
+;; ; duplicate line
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank)
+)
+(global-set-key (kbd "C-x d") 'duplicate-line)
+
+;; BUFFER
+(setq inhibit-startup-buffer-menu t)
+(add-hook 'minibuffer-exit-hook
+      '(lambda ()
+         (let ((buffer "*Completions*"))
+           (and (get-buffer buffer)
+                (kill-buffer buffer)))))
+(setq-default message-log-max nil)
+(kill-buffer "*Messages*")
 
 ;; AUTO GENERATE
 (custom-set-variables
