@@ -14,6 +14,7 @@
                           fiplr
                           pylint
                           jedi
+                          elpy
                           autopair
                           helm
                           org
@@ -306,7 +307,7 @@ Version 2015-05-06"
 )
 (global-set-key (kbd "C-x d") 'duplicate-line)
 
-;; BUFFER
+;; BUFFERo
 (setq inhibit-startup-buffer-menu t)
 (add-hook 'minibuffer-exit-hook
       '(lambda ()
@@ -315,6 +316,12 @@ Version 2015-05-06"
                 (kill-buffer buffer)))))
 (setq-default message-log-max nil)
 (kill-buffer "*Messages*")
+
+;; ELPY
+(elpy-enable)
+; al acceder a una funcion que no haya tiempo limite
+(setq elpy-rpc-timeout nil)
+
 
 ;; AUTO GENERATE
 (custom-set-variables
