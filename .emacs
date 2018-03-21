@@ -1,4 +1,9 @@
 
+(setq highlight-indentation-mode nil)
+(set-face-attribute 'default nil :height 117 :width 'semi-condensed)
+
+
+
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
@@ -8,6 +13,18 @@
 (setq make-backup-files nil)
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
+
+(add-to-list 'load-path "~/.emacs.d/lisp/drag-stuff.el-master")
+(require 'drag-stuff)
+(drag-stuff-mode t)
+
+
+; Collapse
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+(global-set-key (kbd "C-c <right>") 'hs-show-block)
+(global-set-key (kbd "C-c <left>")  'hs-hide-block)
+(global-set-key (kbd "C-c <up>")    'hs-hide-all)
+(global-set-key (kbd "C-c <down>")  'hs-show-all)
 
 ;; powerline
 (powerline-default-theme)
@@ -54,7 +71,7 @@ by using nxml's indentation rules."
       (indent-region begin end))
   (message "Ah, much better!"))
 
-(global-set-key (kbd "C-h") 'prettyxml)
+(global-set-key (kbd "<f1>") 'prettyxml)
 
 ;;CamelCase
 (global-subword-mode 1)
@@ -67,9 +84,6 @@ by using nxml's indentation rules."
 (set-language-environment 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
-; no backup
-(setq backup-directory-alist `(("." . "~/.saves")))
-
 ; Whitespace
 (require 'whitespace)
 (add-hook 'before-save-hook 'delete-trailing-whitespace 'whitespace-mode)
@@ -80,7 +94,6 @@ by using nxml's indentation rules."
 (add-to-list 'package-archives
              '("elpy" . "https://jorgenschaefer.github.io/packages/"))
 (elpy-enable)
-; al acceder a una funcion que no haya tiempo limite
 (setq elpy-rpc-timeout nil)
 
 ;; Jedi
@@ -101,7 +114,7 @@ by using nxml's indentation rules."
 (delete-other-windows)
 
 ;; Guardar ficheros temporales en otra carpeta
-(setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
+(setq backup-directory-alist `(("." . "~/.saves")))
 (setq backup-directory-alist
           `((".*" . ,temporary-file-directory)))
     (setq auto-save-file-name-transforms
@@ -184,22 +197,19 @@ by using nxml's indentation rules."
 ;; ;; Use spaces always.
 (setq indent-tabs-mode nil)
 ;; ;; make tab key always call a indent command.
-(setq-default tab-always-indent t)
+;(setq-default tab-always-indent t)
 ;Jump by 4.
 (setq c-basic-offset 4)
 ;this defaulted to 4 and had to be reset to 3.
 (setq perl-indent-level 4)
 ;Manually set by x4
 (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80))
-(setq-default indent-tabs-mode nil)
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (require 'fill-column-indicator)
 
-(setq highlight-indentation-mode nil)
-(set-face-attribute 'default nil :height 117 :width 'semi-condensed)
 
 ; Columna 80
 (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
@@ -302,89 +312,107 @@ Version 2015-05-06"
  ;; If there is more than one, they won't work right.
  )
 
-;; Multiple cursors
-(require 'multiple-cursors)
+ ;; Multiple cursors
+ (require 'multiple-cursors)
 
-(global-set-key (kbd "C-x w") 'mc/mark-next-like-this-word)
-(global-set-key (kbd "C-x n") 'mc/mark-more-like-this-extended)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-x m") 'mc/mark-all-like-this)
-(global-set-key (kbd "M-n") 'mc/edit-beginnings-of-lines)
-(global-set-key (kbd "C-M-n") 'mc/edit-ends-of-lines)
-(global-set-key (kbd "M-m") 'mc/mark-all-in-region)
-(global-set-key (kbd "C-x j") 'mc/mark-all-like-this-in-defun)
-(global-set-key (kbd "C-x r m") 'set-rectangular-region-anchor)
+ (global-set-key (kbd "C-x w") 'mc/mark-next-like-this-word)
+ (global-set-key (kbd "C-x n") 'mc/mark-more-like-this-extended)
+ (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+ (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+ (global-set-key (kbd "M-n") 'mc/edit-beginnings-of-lines)
 
-;; Buffers
-(global-set-key (kbd "C-x b") 'switch-to-buffer-other-window)
-;; Makes *scratch* empty.
-(setq initial-scratch-message "")
+ (global-set-key (kbd "<f3>") 'mc/mark-all-in-region)
+ (global-set-key (kbd "<f4>") 'mc/mark-all-like-this-in-defun)
+ (global-set-key (kbd "<f5>") 'mc/edit-ends-of-lines)
+ (global-set-key (kbd "<f6>") 'mc/mark-all-like-this)
+ (global-set-key (kbd "<f7>") 'set-rectangular-region-anchor)
+ (global-set-key (kbd "<f8>") 'mc/edit-lines)
 
-;; Removes *scratch* from buffer after the mode has been set.
-(defun remove-scratch-buffer ()
-  (if (get-buffer "*scratch*")
-      (kill-buffer "*scratch*")))
-(add-hook 'after-change-major-mode-hook 'remove-scratch-buffer)
+ ;; Buffers
+ (global-set-key (kbd "C-x b") 'switch-to-buffer-other-window)
+ ;; Makes *scratch* empty.
+ (setq initial-scratch-message "")
 
-;; Removes *messages* from the buffer.
-(setq-default message-log-max nil)
-(kill-buffer "*Messages*")
+ ;; Removes *scratch* from buffer after the mode has been set.
+ (defun remove-scratch-buffer ()
+ (if (get-buffer "*scratch*")
+ (kill-buffer "*scratch*")))
+ (add-hook 'after-change-major-mode-hook 'remove-scratch-buffer)
 
-;; Removes *Completions* from buffer after you've opened a file.
-(add-hook 'minibuffer-exit-hook
-      '(lambda ()
-         (let ((buffer "*Completions*"))
-           (and (get-buffer buffer)
-                (kill-buffer buffer)))))
+ ;; Removes *messages* from the buffer.
+ (setq-default message-log-max nil)
+ (kill-buffer "*Messages*")
 
-;; Don't show *Buffer list* when opening multiple files at the same time.
-(setq inhibit-startup-buffer-menu t)
+ ;; Removes *Completions* from buffer after you've opened a file.
+ (add-hook 'minibuffer-exit-hook
+ '(lambda ()
+ (let ((buffer "*Completions*"))
+ (and (get-buffer buffer)
+ (kill-buffer buffer)))))
 
-;; Show only one active window when opening multiple files at the same time.
-(add-hook 'window-setup-hook 'delete-other-windows)
+ ;; Don't show *Buffer list* when opening multiple files at the same time.
+ (setq inhibit-startup-buffer-menu t)
 
-;; No more typing the whole yes or no. Just y or n will do.
-(fset 'yes-or-no-p 'y-or-n-p)
+ ;; Show only one active window when opening multiple files at the same time.
+ (add-hook 'window-setup-hook 'delete-other-windows)
 
-(global-set-key "\C-x b" (lambda () (interactive)(ibuffer) (other-window 1)))
-(global-set-key "\C-x C-b" (lambda () (interactive)(ibuffer) (other-window 1)))
-(global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
-(global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
+ ;; No more typing the whole yes or no. Just y or n will do.
+ (fset 'yes-or-no-p 'y-or-n-p)
 
-
-
-(eval-after-load "vc-annotate"
-  '(defun vc-annotate-get-time-set-line-props ()
-    (let ((bol (point))
-          (date (vc-call-backend vc-annotate-backend 'annotate-time))
-          (inhibit-read-only t))
-      (assert (>= (point) bol))
-      (put-text-property bol (point) 'invisible 'vc-annotate-annotation)
-      (when (string-equal "Git" vc-annotate-backend)
-      (save-excursion
-        (goto-char bol)
-        (search-forward "(")
-        (let ((p1 (point)))
-          (re-search-forward " [0-9]")
-          (remove-text-properties p1 (1- (point)) '(invisible nil))
-          )))
-    date)))
+ (global-set-key "\C-x b" (lambda () (interactive)(ibuffer) (other-window 1)))
+ (global-set-key "\C-x C-b" (lambda () (interactive)(ibuffer) (other-window 1)))
+ (global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
+ (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
 
 
-(require 'which-func)
-(which-function-mode t)
 
-(require 'package) ;; You might already have this line
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
-  (add-to-list 'package-archives (cons "melpa" url) t))
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize) ;; You might already have this line
+ (eval-after-load "vc-annotate"
+ '(defun vc-annotate-get-time-set-line-props ()
+ (let ((bol (point))
+ (date (vc-call-backend vc-annotate-backend 'annotate-time))
+ (inhibit-read-only t))
+ (assert (>= (point) bol))
+ (put-text-property bol (point) 'invisible 'vc-annotate-annotation)
+ (when (string-equal "Git" vc-annotate-backend)
+ (save-excursion
+ (goto-char bol)
+ (search-forward "(")
+ (let ((p1 (point)))
+ (re-search-forward " [0-9]")
+ (remove-text-properties p1 (1- (point)) '(invisible nil))
+ )))
+ date)))
+
+
+ (require 'which-func)
+ (which-function-mode t)
+
+ (require 'package) ;; You might already have this line
+ (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+ (not (gnutls-available-p))))
+ (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
+ (add-to-list 'package-archives (cons "melpa" url) t))
+ (when (< emacs-major-version 24)
+ ;; For important compatibility libraries like cl-lib
+ (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+ (package-initialize) ;; You might already have this line
 
 
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(put 'downcase-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
+
+
+;; Snippets
+(require 'yasnippet)
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/snippets")
+(yas-minor-mode 1)
+(define-key yas-minor-mode-map (kbd "<tab>") nil)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+(define-key yas-minor-mode-map (kbd "M-SPC") 'yas-expand)
+
+;; (ac-set-trigger-key "TAB")
+;; (define-key yas-minor-mode-map (kbd "SPC") 'yas-expand)
+;; (define-key yas-minor-mode-map (kbd "TAB") nil)
