@@ -1,3 +1,8 @@
+;; Mouse settings
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq mouse-wheel-progressive-speed nil)
 
 (setq highlight-indentation-mode nil)
 (set-face-attribute 'default nil :height 117 :width 'semi-condensed)
@@ -21,10 +26,10 @@
 
 ; Collapse
 (add-hook 'prog-mode-hook #'hs-minor-mode)
-(global-set-key (kbd "C-c <right>") 'hs-show-block)
-(global-set-key (kbd "C-c <left>")  'hs-hide-block)
-(global-set-key (kbd "C-c <up>")    'hs-hide-all)
-(global-set-key (kbd "C-c <down>")  'hs-show-all)
+(global-set-key (kbd "C-c {")  'hs-hide-block)
+(global-set-key (kbd "C-c }") 'hs-show-block)
+(global-set-key (kbd "C-{")    'hs-hide-all)
+(global-set-key (kbd "C-}")  'hs-show-all)
 
 ;; powerline
 (powerline-default-theme)
@@ -158,7 +163,7 @@ by using nxml's indentation rules."
 
 (global-set-key (kbd "C-c w") (quote copy-word))
 
-(global-set-key (kbd "C-x l")
+(global-set-key (kbd "C-c l")
                 (quote kill-ring-save))
 
 (global-set-key (kbd "C-x k")
@@ -166,9 +171,6 @@ by using nxml's indentation rules."
 
 (global-set-key (kbd "M-;")
                 (quote comment-region))
-
-(global-set-key (kbd "C-;")
-                (quote uncomment-region))
 
 ;; Pretty XML
 (defun pretty-xml (begin end)
@@ -315,7 +317,7 @@ Version 2015-05-06"
  ;; Multiple cursors
  (require 'multiple-cursors)
 
- (global-set-key (kbd "s-n") 'set-rectangular-region-anchor)
+ (global-set-key (kbd "C-;") 'set-rectangular-region-anchor)
  (global-set-key (kbd "M-s n") 'mc/mark-all-words-like-this-in-defun)
  (global-set-key (kbd "M-s M-n") 'mc/mark-all-words-like-this)
  (global-set-key (kbd "M-n") 'mc/mark-next-like-this-word)
