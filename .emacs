@@ -29,7 +29,7 @@
                           magit
                           marmalade
                           multiple-cursors
-                          org
+                          keyfreq
                           php-mode
                           puppet-mode
                           py-autopep8
@@ -61,6 +61,11 @@
       initial-scratch-message nil)
 (switch-to-buffer (get-buffer-create "emtpy"))
 (delete-other-windows)
+
+;; Key Freq
+(require 'keyfreq)
+(keyfreq-mode 1)
+(keyfreq-autosave-mode 1)
 
 ;; YASSNIPPETS
 (yas-global-mode 1)
@@ -371,6 +376,7 @@ Version 2015-05-06"
 (setq mouse-wheel-progressive-speed nil)
 
 ;; BUFFER
+(global-set-key [f4] 'kill-this-buffer)   ;; Close the current buffer
 ; Move focus to new buffer
 (define-key global-map [remap list-buffers] 'buffer-menu-other-window)
 (global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
