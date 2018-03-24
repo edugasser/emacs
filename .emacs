@@ -8,36 +8,39 @@
 (setq package-archive-enable-alist '(("melpa" deft magit)))
 
 ;; DEFINE PACKAGES
-(defvar gasser/packages '(auto-complete
-                          ace-jump-mode
+(defvar gasser/packages '(ace-jump-mode
+                          sphinx-doc
+                          auto-complete
                           anaconda-mode
-                          drag-stuff
-                          counsel
-                          fiplr
-                          pylint
-                          jedi
-                          elpy
                           autopair
-                          helm
-                          org
                           clojure-mode
-                          json-mode
                           coffee-mode
-                          importmagic
-                          flycheck
+                          counsel
+                          drag-stuff
+                          elpy
                           fill-column-indicator
+                          fiplr
+                          flycheck
+                          helm
                           htmlize
+                          importmagic
+                          jedi
+                          json-mode
                           magit
                           marmalade
                           multiple-cursors
+                          org
                           php-mode
-                          py-autopep8
                           puppet-mode
+                          py-autopep8
+                          pylint
                           solarized-theme
                           swiper
                           web-mode
                           writegood-mode
-                          yaml-mode)
+                          yaml-mode
+                          yasnippet
+                          yasnippet-snippets)
   "Default packages")
 
 ;; INSTALLING
@@ -59,8 +62,16 @@
 (switch-to-buffer (get-buffer-create "emtpy"))
 (delete-other-windows)
 
-;; APPEARANCE
+;; YASSNIPPETS
+(yas-global-mode 1)
 
+
+;; SPHINX docstring
+; usage C-c M-d
+(add-hook 'python-mode-hook (lambda ()
+                                  (require 'sphinx-doc)
+                                  (sphinx-doc-mode t)))
+;; APPEARANCE
 (toggle-scroll-bar -1)
 
 ;; Highlight some keywords in prog-mode
@@ -79,6 +90,12 @@
 
 ;font										;
 (set-face-attribute 'default nil :height 117 :width 'semi-condensed)
+;; set font for all windows. keep window size fixed
+;(set-frame-font "DejaVu Sans Mono-10" nil t)
+;(set-frame-font "Source Code Pro-10" nil t)
+;(set-frame-font "Inconsolata-11" t t)
+
+
 ;(toggle-scroll-bar -1)
 ;(scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -388,9 +405,12 @@ Version 2015-05-06"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(package-selected-packages
    (quote
-    (hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
+    (yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -400,7 +420,11 @@ Version 2015-05-06"
 
 
 ;; NOTES
-; M-? find references
+; C-x C-x return last ring
+; C-u C-SPACE mark ring previous
+; C-SPC set mark
+; C-x C-f /ssh:tron@ovhtron:/
+
 ;; DRAG-STUFF (move lines)
 (require 'drag-stuff)
 (drag-stuff-global-mode 1)
