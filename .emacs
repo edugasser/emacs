@@ -101,8 +101,6 @@
 ;(set-frame-font "Inconsolata-11" t t)
 
 
-;(toggle-scroll-bar -1)
-;(scroll-bar-mode -1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (setq column-number-mode t)
@@ -393,10 +391,10 @@ Version 2015-05-06"
 
 ;; COLLAPSE
 (add-hook 'prog-mode-hook #'hs-minor-mode)
-(global-set-key (kbd "C-c {")  'hs-hide-block)
-(global-set-key (kbd "C-c }") 'hs-show-block)
-(global-set-key (kbd "C-{")    'hs-hide-all)
-(global-set-key (kbd "C-}")  'hs-show-all)
+(global-set-key (kbd "C-c }")  'hs-hide-block)
+(global-set-key (kbd "C-c {") 'hs-show-block)
+(global-set-key (kbd "C-}")    'hs-hide-all)
+(global-set-key (kbd "C-{")  'hs-show-all)
 
 
 ;; ELPY
