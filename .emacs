@@ -56,6 +56,7 @@
     (when (not (package-installed-p pkg))
       (package-install pkg))))
 
+
 ;; INITIAL
 (setq inhibit-splash-screen t
       initial-scratch-message nil)
@@ -89,9 +90,6 @@
              )
             )
           )
-
-;; Highlight the line we are currently on
-(global-hl-line-mode t)
 
 ;font										;
 (set-face-attribute 'default nil :height 117 :width 'semi-condensed)
@@ -271,13 +269,13 @@
 (global-set-key (kbd "M-p") 'mc/mark-previous-like-this-word)
 (global-set-key (kbd "<f8>") 'mc/edit-lines)
 
-;; PEP 8
-;(require 'py-autopep8)
-;(add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+;; ;; PEP 8
+;; (require 'py-autopep8)
+;; (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
 
-;; FLYCHECK
-;(require 'flycheck)
-;;(global-flycheck-mode t)
+;; ;; FLYCHECK
+;; (require 'flycheck)
+;; (global-flycheck-mode t)
 
 ;; IMPORT MAGIC
 (require 'importmagic)
@@ -424,8 +422,8 @@ Version 2015-05-06"
 
 
 ;; NOTES
-; C-x C-x return last ring
 ; C-u C-SPACE mark ring previous
+; C-x C-x return last ring
 ; C-SPC set mark
 ; C-x C-f /ssh:tron@ovhtron:/
 
@@ -434,3 +432,16 @@ Version 2015-05-06"
 (drag-stuff-global-mode 1)
 (global-set-key (kbd "M-p") 'drag-stuff-up)
 (global-set-key (kbd "M-n") 'drag-stuff-down)
+
+;; Highlight the line we are currently on
+(global-hl-line-mode t)
+(delete 'elpy-module-highlight-indentation elpy-modules)
+
+(setq default-directory "~/roi/bookcore/" )
+;; (require 'git)
+
+;; (autoload 'egit "egit" "Emacs git history" t)
+;; (autoload 'egit-file "egit" "Emacs git history file" t)
+;; (autoload 'egit-dir "egit" "Emacs git history directory" t)
+;; (autoload 'mo-git-blame-file "mo-git-blame" nil t)
+;; (autoload 'mo-git-blame-current "mo-git-blame" nil t)
