@@ -58,6 +58,7 @@
 
 
 ;; INITIAL
+(which-function-mode 1)
 (setq inhibit-splash-screen t
       initial-scratch-message nil)
 (switch-to-buffer (get-buffer-create "emtpy"))
@@ -85,7 +86,7 @@
           (lambda ()
             (font-lock-add-keywords
              nil
-             '(("\\<\\(FIXME\\|TODO\\|BUG\\|DONE\\)" 1 font-lock-warning-face t)
+             '(("\\<\\(FIXME\\|TODO\\|NOTE\\|BUG\\|DONE\\)" 1 font-lock-warning-face t)
                )
              )
             )
@@ -265,8 +266,8 @@
 (global-set-key (kbd "C-;") 'set-rectangular-region-anchor)
 (global-set-key (kbd "M-s n") 'mc/mark-all-words-like-this-in-defun)
 (global-set-key (kbd "M-s M-n") 'mc/mark-all-words-like-this)
-(global-set-key (kbd "M-n") 'mc/mark-next-like-this-word)
-(global-set-key (kbd "M-p") 'mc/mark-previous-like-this-word)
+(global-set-key (kbd "C-?") 'mc/mark-next-like-this-word)
+(global-set-key (kbd "C-¿") 'mc/mark-previous-like-this-word)
 (global-set-key (kbd "<f8>") 'mc/edit-lines)
 
 ;; ;; PEP 8
@@ -366,7 +367,7 @@ Version 2015-05-06"
      "python -mjson.tool" (current-buffer) t)))
 
 ;; MOUSE
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-scroll-amount '(2 ((shift) . 2))) ;; one line at a time
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq mouse-wheel-progressive-speed nil)
@@ -438,10 +439,14 @@ Version 2015-05-06"
 (delete 'elpy-module-highlight-indentation elpy-modules)
 
 (setq default-directory "~/roi/bookcore/" )
-;; (require 'git)
 
-;; (autoload 'egit "egit" "Emacs git history" t)
-;; (autoload 'egit-file "egit" "Emacs git history file" t)
-;; (autoload 'egit-dir "egit" "Emacs git history directory" t)
-;; (autoload 'mo-git-blame-file "mo-git-blame" nil t)
-;; (autoload 'mo-git-blame-current "mo-git-blame" nil t)
+(put 'scroll-left 'disabled nil)
+
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(require 'git)
+
+(autoload 'egit "egit" "Emacs git history" t)
+(autoload 'egit-file "egit" "Emacs git history file" t)
+(autoload 'egit-dir "egit" "Emacs git history directory" t)
+(autoload 'mo-git-blame-file "mo-git-blame" nil t)
+(autoload 'mo-git-blame-current "mo-git-blame" nil t)
