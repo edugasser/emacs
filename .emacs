@@ -9,6 +9,7 @@
 
 ;; DEFINE PACKAGES
 (defvar gasser/packages '(ace-jump-mode
+                          spacemacs-theme
                           sphinx-doc
                           auto-complete
                           anaconda-mode
@@ -443,10 +444,15 @@ Version 2015-05-06"
 (put 'scroll-left 'disabled nil)
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(require 'git)
 
-(autoload 'egit "egit" "Emacs git history" t)
-(autoload 'egit-file "egit" "Emacs git history file" t)
-(autoload 'egit-dir "egit" "Emacs git history directory" t)
-(autoload 'mo-git-blame-file "mo-git-blame" nil t)
-(autoload 'mo-git-blame-current "mo-git-blame" nil t)
+;; (require 'git)
+
+;; (autoload 'egit "egit" "Emacs git history" t)
+;; (autoload 'egit-file "egit" "Emacs git history file" t)
+;; (autoload 'egit-dir "egit" "Emacs git history directory" t)
+;; (autoload 'mo-git-blame-file "mo-git-blame" nil t)
+;; (autoload 'mo-git-blame-current "mo-git-blame" nil t)
+
+(load-theme 'spacemacs-dark t)
+(setq spacemacs-theme-org-agenda-height nil)
+(setq spacemacs-theme-org-height nil)
