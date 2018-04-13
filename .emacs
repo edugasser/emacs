@@ -9,7 +9,9 @@
 
 ;; DEFINE PACKAGES
 (defvar gasser/packages '(ace-jump-mode
-                          spacemacs-theme
+                          all-the-icons ;; REMBEMBER M-x all-the-icons-install-fonts
+                          neotree
+                          doom-themes
                           sphinx-doc
                           spaceline
                           auto-complete
@@ -59,7 +61,7 @@
       (package-install pkg))))
 
 
-;; INITIAL
+;; INITIALa
 (which-function-mode 1)
 (setq inhibit-splash-screen t
       initial-scratch-message nil)
@@ -82,6 +84,10 @@
                                   (sphinx-doc-mode t)))
 ;; APPEARANCE
 (toggle-scroll-bar -1)
+(setq powerline-default-separator 'arrow-fade)
+(require 'spaceline-config)
+(spaceline-spacemacs-theme)
+
 
 ;; Highlight some keywords in prog-mode
 (add-hook 'prog-mode-hook
@@ -105,9 +111,32 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (setq column-number-mode t)
-(if window-system
-    (load-theme 'solarized-dark t)
-  (load-theme 'wombat t))
+
+;; DOOM THEME INIT
+(require 'doom-themes)
+
+;; Global settings (defaults)
+(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+      doom-themes-enable-italic t) ; if nil, italics is universally disabled
+
+;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
+;; may have their own settings.
+(load-theme 'doom-one t)
+
+;; Enable flashing mode-line on errors
+(doom-themes-visual-bell-config)
+
+;; Enable custom neotree theme
+(doom-themes-neotree-config)  ; all-the-icons fonts must be installed!e
+
+;; Corrects (and improves) org-mode's native fontification.
+(doom-themes-org-config)
+
+
+;; Solarized them
+;; (if window-system
+;;     (load-theme 'solarized-dark t)
+;;   (load-theme 'wombat t))
 
 ;; MARKING TEXT
 (delete-selection-mode t)
@@ -270,7 +299,6 @@
 (global-set-key (kbd "M-s M-n") 'mc/mark-all-words-like-this)
 (global-set-key (kbd "C-?") 'mc/mark-next-like-this-word)
 (global-set-key (kbd "C-¿") 'mc/mark-previous-like-this-word)
-(global-set-key (kbd "<f8>") 'mc/edit-lines)
 
 ;; ;; PEP 8
 ;; (require 'py-autopep8)
@@ -279,10 +307,6 @@
 ;; ;; FLYCHECK
 ;; (require 'flycheck)
 ;; (global-flycheck-mode t)
-
-;; IMPORT MAGIC
-(require 'importmagic)
-(add-hook 'python-mode-hook 'importmagic-mode)
 
 ;; JEDI
 (require 'jedi)
@@ -413,7 +437,7 @@ Version 2015-05-06"
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+    ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(package-selected-packages
    (quote
     (yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
@@ -440,15 +464,10 @@ Version 2015-05-06"
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
-(load-theme 'spacemacs-dark t)
-(setq spacemacs-theme-org-agenda-height nil)
-(setq spacemacs-theme-org-height nil)
 
 
-(setq powerline-default-separator 'arrow-fade)
-(require 'spaceline-config)
-(spaceline-spacemacs-theme)
-
+;; Neo tree
+(global-set-key [f8] 'neotree-toggle)
 
 ;; NOTES
 ; C-u C-SPACE mark ring previous
