@@ -11,6 +11,7 @@
 (defvar gasser/packages '(ace-jump-mode
                           spacemacs-theme
                           sphinx-doc
+                          spaceline
                           auto-complete
                           anaconda-mode
                           autopair
@@ -351,6 +352,7 @@ Version 2015-05-06"
   (yank)
 )
 (global-set-key (kbd "C-x d") 'duplicate-line)
+(global-set-key (kbd "C-x SPC") 'rectangle-mark-mode)
 
 ;; SWIPER
 (ivy-mode 1)
@@ -422,13 +424,6 @@ Version 2015-05-06"
  ;; If there is more than one, they won't work right.
  )
 
-
-;; NOTES
-; C-u C-SPACE mark ring previous
-; C-x C-x return last ring
-; C-SPC set mark
-; C-x C-f /ssh:tron@ovhtron:/
-
 ;; DRAG-STUFF (move lines)
 (require 'drag-stuff)
 (drag-stuff-global-mode 1)
@@ -445,14 +440,19 @@ Version 2015-05-06"
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
-;; (require 'git)
-
-;; (autoload 'egit "egit" "Emacs git history" t)
-;; (autoload 'egit-file "egit" "Emacs git history file" t)
-;; (autoload 'egit-dir "egit" "Emacs git history directory" t)
-;; (autoload 'mo-git-blame-file "mo-git-blame" nil t)
-;; (autoload 'mo-git-blame-current "mo-git-blame" nil t)
-
 (load-theme 'spacemacs-dark t)
 (setq spacemacs-theme-org-agenda-height nil)
 (setq spacemacs-theme-org-height nil)
+
+
+(setq powerline-default-separator 'arrow-fade)
+(require 'spaceline-config)
+(spaceline-spacemacs-theme)
+
+
+;; NOTES
+; C-u C-SPACE mark ring previous
+; C-x C-x return last ring
+; C-SPC set mark
+; C-x C-f /ssh:tron@ovhtron:/
+; C-x SPC seleccionar rectangulo
