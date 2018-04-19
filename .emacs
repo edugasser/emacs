@@ -10,6 +10,7 @@
 ;; DEFINE PACKAGES
 (defvar gasser/packages '(ace-jump-mode
                           all-the-icons ;; REMBEMBER M-x all-the-icons-install-fonts
+                          nlinum
                           neotree
                           doom-themes
                           sphinx-doc
@@ -112,31 +113,10 @@
 (menu-bar-mode -1)
 (setq column-number-mode t)
 
-;; DOOM THEME INIT
-(require 'doom-themes)
-
-;; Global settings (defaults)
-(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-      doom-themes-enable-italic t) ; if nil, italics is universally disabled
-
-;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
-;; may have their own settings.
-(load-theme 'doom-one t)
-
-;; Enable flashing mode-line on errors
-(doom-themes-visual-bell-config)
-
-;; Enable custom neotree theme
-(doom-themes-neotree-config)  ; all-the-icons fonts must be installed!e
-
-;; Corrects (and improves) org-mode's native fontification.
-(doom-themes-org-config)
-
-
 ;; Solarized them
-;; (if window-system
-;;     (load-theme 'solarized-dark t)
-;;   (load-theme 'wombat t))
+(if window-system
+    (load-theme 'solarized-dark t)
+  (load-theme 'wombat t))
 
 ;; MARKING TEXT
 (delete-selection-mode t)
@@ -144,7 +124,17 @@
 (setq x-select-enable-clipboard t)
 
 ;; DISPLAY SETTINGS
-(global-linum-mode 1)
+(global-nlinum-mode 1)
+;; Preset `nlinum-format' for minimum width.
+(defun my-nlinum-mode-hook ()
+  (when nlinum-mode
+    (setq-local nlinum-format
+                (concat "%" (number-to-string
+                             ;; Guesstimate number of buffer lines.
+                             (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))
+                        "d"))))
+(add-hook 'nlinum-mode-hook #'my-nlinum-mode-hook)
+
 (setq-default frame-title-format "%b (%f)")
 (setq-default indicate-empty-lines t)
 (when (not indicate-empty-lines)
@@ -184,8 +174,6 @@
 )
 
 (global-set-key (kbd "RET") 'newline-and-indent)
-(global-set-key (kbd "C-;") 'comment-or-uncomment-region)
-(global-set-key (kbd "C-q") 'forward-word)
 (global-set-key (kbd "C-x d") 'duplicate-line)
 
 ;; UNDO REDO
@@ -269,9 +257,10 @@
 (add-hook 'python-mode-hook 'anaconda-mode)
 
 ;; FUZZY SEARCH
+(setq default-directory "~/roi/bookcore/bookcore" )
 (setq fiplr-root-markers '(".hg" ".git"))
-(setq fiplr-ignored-globs '((directories (".hg" "uploads"))
-                            (files ("*.jpg" "*.pyc" "*.po" "*.png" "*.zip" "*~"))))
+(setq fiplr-ignored-globs '((directories (".git" "uploads" "autopyxb" "tmp" "docs" "locale" "node_modules"))
+                            (files ("*.jpg" "*.pyc" "*.xml" "*.po" "*.png" "*.zip" "*~" "*.xsd" "*.min.js" "*.xls" "*.log" "*.md" "*.dia" "*.diff" "*.txt"))))
 (global-set-key (kbd "C-x p") 'fiplr-find-file)
 
 ;; ACE MODE
@@ -362,7 +351,7 @@ Version 2015-05-06"
         (message "buffer text copied")
       (message "text copied"))))
 
-(global-set-key (kbd "C-j") 'xah-copy-line-or-region)
+(global-set-key (kbd "C-c k") 'xah-copy-line-or-region)
 
 ;; DUPLICATE LINE
 ;; ; duplicate line
@@ -422,7 +411,6 @@ Version 2015-05-06"
 (global-set-key (kbd "C-}")    'hs-hide-all)
 (global-set-key (kbd "C-{")  'hs-show-all)
 
-
 ;; ELPY
 (elpy-enable)
 ; al acceder a una funcion que no haya tiempo limite
@@ -464,10 +452,39 @@ Version 2015-05-06"
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
-
-
 ;; Neo tree
 (global-set-key [f8] 'neotree-toggle)
+
+;;EMACS so slow? Adjust the idle delay before which eldoc ask for documentation under point with:
+(setq eldoc-idle-delay 1)  ;; in second
+
+;; Behave like vi's o command
+(defun open-next-line (arg)
+  "Move to the next line and then opens a line.
+    See also `newline-and-indent'."
+  (interactive "p")
+  (end-of-line)
+  (open-line arg)
+  (next-line 1)
+  (when newline-and-indent
+    (indent-according-to-mode)))
+
+(global-set-key (kbd "C-o") 'open-next-line)
+
+(defun open-previous-line (arg)
+  "Open a new line before the current one.
+     See also `newline-and-indent'."
+  (interactive "p")
+  (beginning-of-line)
+  (open-line arg)
+  (when newline-and-indent
+    (indent-according-to-mode)))
+
+(global-set-key (kbd "M-o") 'open-previous-line)
+
+;; Autoindent open-*-lines
+(defvar newline-and-indent t
+  "Modify the behavior of the open-*-line functions to cause them to autoindent.")
 
 ;; NOTES
 ; C-u C-SPACE mark ring previous
@@ -475,3 +492,4 @@ Version 2015-05-06"
 ; C-SPC set mark
 ; C-x C-f /ssh:tron@ovhtron:/
 ; C-x SPC seleccionar rectangulo
+; M-x profiler-start | pofiler-report ;
