@@ -529,6 +529,9 @@ Version 2015-05-06"
 (set-face-foreground 'highlight-changes-delete nil)
 (set-face-background 'highlight-changes-delete "#916868")
 
+;; Movement
+(global-set-key (kbd "C-i")  'move-to-window-line-top-bottom)
+
 ;; NOTES
 ; C-u C-SPACE mark ring previous
 ; C-x C-x return last ring
@@ -537,4 +540,4 @@ Version 2015-05-06"
 ; C-x SPC seleccionar rectangulo
 ; M-x profiler-start | pofiler-report
 ; M-r anaconda-mode-find-references
-; M-, anaconda-mode-find-assignments
+; m-, anaconda-mode-find-assignments
