@@ -417,7 +417,14 @@ Version 2015-05-06"
 (elpy-enable)
 ; al acceder a una funcion que no haya tiempo limite
 (setq elpy-rpc-timeout nil)
+(global-set-key (kbd "M-¿") 'elpy-rgrep-symbol)
 
+(defun goto-def-or-rgrep ()
+  "Go to definition of thing at point or do an rgrep in project if that fails"
+  (interactive)
+  (condition-case nil (elpy-goto-definition)
+    (error (elpy-rgrep-symbol (thing-at-point 'symbol)))))
+(define-key elpy-mode-map (kbd "M-.") 'goto-def-or-rgrep)
 
 ;; AUTO GENERATE
 (custom-set-variables
@@ -503,7 +510,6 @@ Version 2015-05-06"
 
 ;; js-mode (which js2 is based on) binds "M-." which conflicts with xref, so
 ;; unbind it.
-(define-key js-mode-map (kbd "M-.") nil)
 
 (add-hook 'js2-mode-hook (lambda ()
                            (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
@@ -523,7 +529,6 @@ Version 2015-05-06"
 (set-face-foreground 'highlight-changes-delete nil)
 (set-face-background 'highlight-changes-delete "#916868")
 
-
 ;; NOTES
 ; C-u C-SPACE mark ring previous
 ; C-x C-x return last ring
@@ -531,3 +536,4 @@ Version 2015-05-06"
 ; C-x C-f /ssh:tron@ovhtron:/
 ; C-x SPC seleccionar rectangulo
 ; M-x profiler-start | pofiler-report ;
+; M-r move cursor
