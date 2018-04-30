@@ -43,7 +43,7 @@ URxvt.scrollBar:            true
 ! scrollbar
 !
 ! enable scrollbar
-URxvt*scrollBar:          true     
+URxvt*scrollBar:          true
 ! scrollbar width
 URxvt*thickness:          5
 ! scrollbar color
@@ -75,7 +75,7 @@ URxvt*mouseWheelScrollPage: false
 
 
 ! Perl extensions
-URxvt.perl-ext-common:      default,matcher,tabbed,clipboard
+URxvt.perl-ext-common:      default,matcher,tabbed,clipboard,keyboard-select
 URxvt.matcher.button:       1
 URxvt.urlLauncher:          firefox
 
@@ -129,5 +129,28 @@ URxvt.pointerBlank:         true
 *color7: #eee8d5
 *color15: #fdf6e3
 
-URxvt.keysym.Shift-Control-V: eval:paste_clipboard
-URxvt.keysym.Shift-Control-C: eval:selection_to_clipboarD
+!! Copy-Paste
+URxvt.keysym.Shift-Control-V: perl:clipboard:paste
+URxvt.iso14755: False
+
+! sudo apt-get install xclip
+! 'clipboard' in '/usr/lib/urxvt/perl/' with this content:
+!#script to copy/paste text in URXVT
+!#! perl
+!sub on_sel_grab {
+!    my $query = $_[0]->selection;
+!    open (my $pipe,'| /usr/bin/xclip -in -selection clipboard') or die;
+!    print $pipe $query;
+!    close $pipe;
+!}
+!sub paste {
+!    my ($self) = @_;
+!    my $content = `/usr/bin/xclip -loop 1 -out -selection clipboard` ;
+!    $self->tt_write ($content);
+!}
+!sub on_user_command {
+!    my ($self, $cmd) = @_;
+!    if ($cmd eq "clipboard:paste") {
+!        $self->paste;
+!    }
+!}
