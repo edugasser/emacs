@@ -11,8 +11,11 @@
 (defvar gasser/packages '(ace-jump-mode
                           all-the-icons ;; REMBEMBER M-x all-the-icons-install-fonts
                           nlinum
+                          js2-refactor
+                          xref-js2
                           neotree
                           doom-themes
+                          js2-mode
                           sphinx-doc
                           spaceline
                           auto-complete
@@ -368,7 +371,6 @@ Version 2015-05-06"
 (global-set-key (kbd "C-x SPC") 'rectangle-mark-mode)
 
 ;; SWIPER
-(ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 (global-set-key "\C-s" 'swiper)
@@ -406,8 +408,8 @@ Version 2015-05-06"
 
 ;; COLLAPSE
 (add-hook 'prog-mode-hook #'hs-minor-mode)
-(global-set-key (kbd "C-c }")  'hs-hide-block)
-(global-set-key (kbd "C-c {") 'hs-show-block)
+(global-set-key (kbd "C-M-}")  'hs-hide-block)
+(global-set-key (kbd "C-M-{") 'hs-show-block)
 (global-set-key (kbd "C-}")    'hs-hide-all)
 (global-set-key (kbd "C-{")  'hs-show-all)
 
@@ -485,6 +487,42 @@ Version 2015-05-06"
 ;; Autoindent open-*-lines
 (defvar newline-and-indent t
   "Modify the behavior of the open-*-line functions to cause them to autoindent.")
+
+;; JS Framework
+(require 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+;; Better imenu
+(add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
+(require 'js2-refactor)
+(require 'xref-js2)
+
+(add-hook 'js2-mode-hook #'js2-refactor-mode)
+(js2r-add-keybindings-with-prefix "C-c C-r")
+(define-key js2-mode-map (kbd "C-k") #'js2r-kill)
+
+;; js-mode (which js2 is based on) binds "M-." which conflicts with xref, so
+;; unbind it.
+(define-key js-mode-map (kbd "M-.") nil)
+
+(add-hook 'js2-mode-hook (lambda ()
+                           (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
+
+;; higlight changes in documents
+(global-highlight-changes-mode t)
+(setq highlight-changes-visibility-initial-state nil); initially hide
+;; toggle visibility
+(global-set-key (kbd "<f6>")      'highlight-changes-visible-mode) ;; changes
+;; remove the change-highlight in region
+(global-set-key (kbd "S-<f6>")    'highlight-changes-remove-highlight)
+;; if you're not already using it for something else...
+(global-set-key (kbd "<M-prior>") 'highlight-changes-next-change)
+(global-set-key (kbd "<M-next>")  'highlight-changes-previous-change)
+(set-face-foreground 'highlight-changes nil)
+(set-face-background 'highlight-changes "#382f2f")
+(set-face-foreground 'highlight-changes-delete nil)
+(set-face-background 'highlight-changes-delete "#916868")
+
 
 ;; NOTES
 ; C-u C-SPACE mark ring previous
