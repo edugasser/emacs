@@ -535,5 +535,6 @@ Version 2015-05-06"
 ; C-SPC set mark
 ; C-x C-f /ssh:tron@ovhtron:/
 ; C-x SPC seleccionar rectangulo
-; M-x profiler-start | pofiler-report ;
-; M-r move cursor
+; M-x profiler-start | pofiler-report
+; M-r anaconda-mode-find-references
+; M-, anaconda-mode-find-assignments
