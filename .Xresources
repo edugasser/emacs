@@ -75,7 +75,7 @@ URxvt*mouseWheelScrollPage: false
 
 
 ! Perl extensions
-URxvt.perl-ext-common:      default,matcher
+URxvt.perl-ext-common:      default,matcher,tabbed,clipboard
 URxvt.matcher.button:       1
 URxvt.urlLauncher:          firefox
 
@@ -128,3 +128,6 @@ URxvt.pointerBlank:         true
 !! white dark/light
 *color7: #eee8d5
 *color15: #fdf6e3
+
+URxvt.keysym.Shift-Control-V: eval:paste_clipboard
+URxvt.keysym.Shift-Control-C: eval:selection_to_clipboarD
