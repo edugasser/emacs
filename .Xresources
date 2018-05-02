@@ -47,7 +47,7 @@ URxvt*scrollBar:          true
 ! scrollbar width
 URxvt*thickness:          5
 ! scrollbar color
-URxvt*scrollColor:        #1E1E1E
+URxvt*scrollColor:        #005cb3
 ! scrollbar trough area color
 !URxvt*troughColor:        #333333
 ! scrollbar without a trough
@@ -89,7 +89,7 @@ URxvt.pointerBlank:         true
 
 !!Source http://github.com/altercation/solarized
 
-*background: #0C0C0C
+*background: #001a33
 *foreground: #657b83
 !!*fading: 40
 *fadeColor: #002b36
