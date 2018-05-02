@@ -7,7 +7,8 @@ Xft.antialias:              false
 Xft.rgba:                   rgb
 Xft.hinting:                true
 Xft.hintstyle:              hintslight
-
+! xterm: scrollback buffer size
+xterm*SaveLines:65535
 !-------------------------------------------------------------------------------
 ! URxvt settings
 ! Colours lifted from Solarized (http://ethanschoonover.com/solarized)
@@ -29,8 +30,8 @@ URxvt.lineSpace:            0
 ! Fonts
 URxvt.allow_bold:           false
 /* URxvt.font:                 -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso8859-1 */
-URxvt*font: xft:Monospace:pixelsize=12
-URxvt*boldFont: xft:Monospace:pixelsize=12
+URxvt*font: xft:DeJavu Sans Mono:pixelsize=12
+URxvt*boldFont: xft:DeJavu Sans Mono:pixelsize=12
 
 ! Fix font space
 URxvt*letterSpace: -1
@@ -57,6 +58,13 @@ URxvt*scrollBar_right:    true
 ! scrollbar style
 URxvt*scrollstyle: plain
 
+
+!! Control + arrow key navigation
+URxvt.keysym.Control-Up:    \033[1;5A
+URxvt.keysym.Control-Down:  \033[1;5B
+URxvt.keysym.Control-Left:  \033[1;5D
+URxvt.keysym.Control-Right: \033[1;5C
+
 !
 ! scroll
 !
@@ -75,7 +83,7 @@ URxvt*mouseWheelScrollPage: false
 
 
 ! Perl extensions
-URxvt.perl-ext-common:      default,matcher,tabbed,clipboard,keyboard-select
+URxvt.perl-ext-common:      default,matcher,tabbed,clipboard,keyboard-select,selection-to-clipboard,vtwheel,osc-xterm-clipboard,clipboard-past-on-right-click
 URxvt.matcher.button:       1
 URxvt.urlLauncher:          firefox
 
@@ -131,7 +139,7 @@ URxvt.pointerBlank:         true
 
 !! Copy-Paste
 URxvt.keysym.Shift-Control-V: perl:clipboard:paste
-URxvt.iso14755: False
+URxvt.iso14755: True
 
 ! sudo apt-get install xclip
 ! 'clipboard' in '/usr/lib/urxvt/perl/' with this content:
@@ -154,3 +162,15 @@ URxvt.iso14755: False
 !        $self->paste;
 !    }
 !}
+
+
+! My laptop has home/end a long way from my arrows
+URxvt.keysym.Control-M-Left: \033[1~
+URxvt.keysym.Control-M-Right: \033[4~
+
+
+!! Font-size adjustments
+URxvt.keysym.C-equal:   perl:font-size:increase
+URxvt.keysym.C-minus:   perl:font-size:decrease
+URxvt.keysym.C-S-equal: perl:font-size:incglobal
+URxvt.keysym.C-S-minus: perl:font-size:decglobal
