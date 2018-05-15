@@ -437,7 +437,7 @@ Version 2015-05-06"
     ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(package-selected-packages
    (quote
-    (yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
+    (flymake-python-pyflakes yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -530,7 +530,7 @@ Version 2015-05-06"
 (set-face-background 'highlight-changes-delete "#916868")
 
 ;; Movement
-(global-set-key (kbd "C-i")  'move-to-window-line-top-bottom)
+;(global-set-key (kbd "C-i")  'move-to-window-line-top-bottom)
 
 ;; NOTES
 ; C-u C-SPACE mark ring previous

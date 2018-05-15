@@ -8,7 +8,7 @@ Xft.rgba:                   rgb
 Xft.hinting:                true
 Xft.hintstyle:              hintslight
 ! xterm: scrollback buffer size
-xterm*SaveLines:65535
+!xterm*SaveLines:65535
 !-------------------------------------------------------------------------------
 ! URxvt settings
 ! Colours lifted from Solarized (http://ethanschoonover.com/solarized)
@@ -23,7 +23,7 @@ URxvt.fading:               0
 ! URxvt.urgentOnBell:         true
 ! URxvt.visualBell:           true
 URxvt.loginShell:           true
-URxvt.saveLines:            50
+URxvt.saveLines:            65535
 URxvt.internalBorder:       3
 URxvt.lineSpace:            0
 
@@ -83,7 +83,10 @@ URxvt*mouseWheelScrollPage: false
 
 
 ! Perl extensions
-URxvt.perl-ext-common:      default,matcher,tabbed,clipboard,keyboard-select,selection-to-clipboard,vtwheel,osc-xterm-clipboard,clipboard-past-on-right-click
+! Portatil Conf
+!URxvt.perl-ext-common:      default,matcher,tabbed,clipboard,keyboard-select,selection-to-clipboard,vtwheel,osc-xterm-clipboard,clipboard-past-on-right-click
+! PC Conf
+URxvt.perl-ext-common:      default,matcher
 URxvt.matcher.button:       1
 URxvt.urlLauncher:          firefox
 
