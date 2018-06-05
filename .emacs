@@ -1,3 +1,14 @@
+;; NOTES
+; C-u C-SPACE mark ring previous
+; C-x C-x return last ring
+; C-SPC set mark
+; C-x C-f /ssh:tron@ovhtron:/
+; C-x SPC seleccionar rectangulo
+; M-x profiler-start | pofiler-report
+; M-r anaconda-mode-find-references
+; m-, anaconda-mode-find-assignments
+; pip install flake8!
+
 (load "package")
 (package-initialize)
 (add-to-list 'package-archives
@@ -65,8 +76,7 @@
       (package-install pkg))))
 
 
-;; INITIALa
-(which-function-mode 1)
+;; INITIAL
 (setq inhibit-splash-screen t
       initial-scratch-message nil)
 (switch-to-buffer (get-buffer-create "emtpy"))
@@ -437,7 +447,7 @@ Version 2015-05-06"
     ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(package-selected-packages
    (quote
-    (flymake-python-pyflakes yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
+    (ace-window flymake-python-pyflakes yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -530,14 +540,17 @@ Version 2015-05-06"
 (set-face-background 'highlight-changes-delete "#916868")
 
 ;; Movement
-;(global-set-key (kbd "C-i")  'move-to-window-line-top-bottom)
+(global-set-key (kbd "C-h")  'move-to-window-line-top-bottom)
+(desktop-save-mode 1)
 
-;; NOTES
-; C-u C-SPACE mark ring previous
-; C-x C-x return last ring
-; C-SPC set mark
-; C-x C-f /ssh:tron@ovhtron:/
-; C-x SPC seleccionar rectangulo
-; M-x profiler-start | pofiler-report
-; M-r anaconda-mode-find-references
-; m-, anaconda-mode-find-assignments
+;; Emacs slow
+(which-function-mode nil)
+(setq history-length 100)
+(put 'minibuffer-history 'history-length 50)
+(put 'evil-ex-history 'history-length 50)
+(put 'kill-ring 'history-length 25)
+
+
+(global-set-key (kbd "<f12>") 'kill-some-buffers)
+(global-set-key (kbd "<f9>") 'magit-blame)
+(global-set-key (kbd "<f7>") 'magit-blame-quit)
