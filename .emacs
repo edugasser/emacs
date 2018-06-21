@@ -57,6 +57,7 @@
                           swiper
                           web-mode
                           writegood-mode
+                          undo-tree
                           yaml-mode
                           yasnippet
                           yasnippet-snippets)
@@ -187,7 +188,7 @@
 )
 
 (global-set-key (kbd "RET") 'newline-and-indent)
-(global-set-key (kbd "C-x d") 'duplicate-line)
+(global-set-key (kbd "C-M-d") 'duplicate-line)
 
 ;; UNDO REDO
 (global-set-key (kbd "C-z") 'undo-tree-undo)
@@ -364,7 +365,7 @@ Version 2015-05-06"
         (message "buffer text copied")
       (message "text copied"))))
 
-(global-set-key (kbd "C-c k") 'xah-copy-line-or-region)
+(global-set-key (kbd "C-M-c") 'xah-copy-line-or-region)
 
 ;; DUPLICATE LINE
 ;; ; duplicate line
@@ -418,23 +419,23 @@ Version 2015-05-06"
 
 ;; COLLAPSE
 (add-hook 'prog-mode-hook #'hs-minor-mode)
-(global-set-key (kbd "C-M-}")  'hs-hide-block)
-(global-set-key (kbd "C-M-{") 'hs-show-block)
-(global-set-key (kbd "C-}")    'hs-hide-all)
-(global-set-key (kbd "C-{")  'hs-show-all)
+(global-set-key (kbd "C-¡") 'my-hs-toggle-all)
+(global-set-key (kbd "C-'") 'hs-hide-level)
+(global-set-key (kbd "C-0") 'hs-toggle-hiding)
+
+(defun my-hs-toggle-all ()
+  "If anything isn't hidden, run `hs-hide-all', else run `hs-show-all'."
+  (interactive)
+  (let ((starting-ov-count (length (overlays-in (point-min) (point-max)))))
+    (hs-hide-all)
+    (when (equal (length (overlays-in (point-min) (point-max))) starting-ov-count)
+      (hs-show-all))))
+
 
 ;; ELPY
 (elpy-enable)
 ; al acceder a una funcion que no haya tiempo limite
 (setq elpy-rpc-timeout nil)
-(global-set-key (kbd "M-¿") 'elpy-rgrep-symbol)
-
-(defun goto-def-or-rgrep ()
-  "Go to definition of thing at point or do an rgrep in project if that fails"
-  (interactive)
-  (condition-case nil (elpy-goto-definition)
-    (error (elpy-rgrep-symbol (thing-at-point 'symbol)))))
-(define-key elpy-mode-map (kbd "M-.") 'goto-def-or-rgrep)
 
 ;; AUTO GENERATE
 (custom-set-variables
@@ -458,6 +459,14 @@ Version 2015-05-06"
 ;; DRAG-STUFF (move lines)
 (require 'drag-stuff)
 (drag-stuff-global-mode 1)
+
+(defun pru ()
+  "Move up the current line."
+  (interactive)
+  (duplicate-line)
+  (drag-stuff-up 1)
+  )
+
 (global-set-key (kbd "M-p") 'drag-stuff-up)
 (global-set-key (kbd "M-n") 'drag-stuff-down)
 
@@ -554,3 +563,41 @@ Version 2015-05-06"
 (global-set-key (kbd "<f12>") 'kill-some-buffers)
 (global-set-key (kbd "<f9>") 'magit-blame)
 (global-set-key (kbd "<f7>") 'magit-blame-quit)
+
+
+(add-to-list 'load-path "~/.emacs.d/swiper-helm")
+
+(defun selection-or-thing-at-point ()
+  (cond
+   ;; If there is selection use it
+   ((and transient-mark-mode
+         mark-active
+         (not (eq (mark) (point))))
+    (let ((mark-saved (mark))
+          (point-saved (point)))
+      (deactivate-mark)
+      (buffer-substring-no-properties mark-saved point-saved)))
+   ;; Otherwise, use symbol at point or empty
+   (t (format "%s"
+              (or (thing-at-point 'symbol)
+                  "")))))
+
+;; https://github.com/abo-abo/swiper-helm.git
+(require 'swiper-helm)
+(defun swiper-helm-at-point ()
+    "Custom function to pick up a thing at a point for swiper-helm
+    If a selected region exists, it will be searched for by swiper-helm
+    If there is a symbol at the current point, its textual representation is
+    searched. If there is no symbol, empty search box is started."
+    (interactive)
+    (swiper-helm (selection-or-thing-at-point)))
+
+(global-set-key (kbd "M-s .") 'swiper-helm-at-point)
+
+;; Grep at symbol or selection point
+(defun grepme ()
+   (interactive)
+   (counsel-git-grep nil
+                     (selection-or-thing-at-point)))
+
+(global-set-key (kbd "M-¿") 'grepme)
