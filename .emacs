@@ -202,7 +202,7 @@
 (setq-default show-trailing-whitespace t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 ; Camel Case
-(global-subword-mode 1)
+(global-subword-mode nil)
 
 ;; UTF8
 (set-language-environment 'utf-8)
@@ -509,6 +509,7 @@ Version 2015-05-06"
     (indent-according-to-mode)))
 
 (global-set-key (kbd "M-o") 'open-previous-line)
+(global-set-key (kbd "C-M-k") 'kill-whole-line)
 
 ;; Autoindent open-*-lines
 (defvar newline-and-indent t
