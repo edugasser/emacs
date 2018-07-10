@@ -20,6 +20,7 @@
 
 ;; DEFINE PACKAGES
 (defvar gasser/packages '(ace-jump-mode
+                          real-auto-save
                           all-the-icons ;; REMBEMBER M-x all-the-icons-install-fonts
                           nlinum
                           js2-refactor
@@ -41,6 +42,7 @@
                           fiplr
                           flycheck
                           helm
+                          helm-swoop
                           htmlize
                           importmagic
                           jedi
@@ -84,12 +86,19 @@
 (delete-other-windows)
 
 ;; Key Freq
-(require 'keyfreq)
-(keyfreq-mode 1)
-(keyfreq-autosave-mode 1)
+;(require 'keyfreq)
+;(keyfreq-mode 1)
+;(keyfreq-autosave-mode 1)
 
 ;; YASSNIPPETS
 (yas-global-mode 1)
+
+;(require 'real-auto-save)
+;(add-hook 'prog-mode-hook 'real-auto-save-mode)
+                                        ;(setq real-auto-save-interval 1) ;; in seconds
+
+(setq auto-save-default t)
+(setq auto-save-visited-file-name t)
 
 
 ;; SPHINX docstring
@@ -187,7 +196,7 @@
   (yank)
 )
 
-(global-set-key (kbd "RET") 'newline-and-indent)
+;(global-set-key (kbd "RET") 'newline-and-indent)
 (global-set-key (kbd "C-M-d") 'duplicate-line)
 
 ;; UNDO REDO
@@ -200,7 +209,10 @@
 (show-paren-mode t)
 (require 'autopair)
 (setq-default show-trailing-whitespace t)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+                                        ;(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+(add-hook 'before-save-hook 'whitespace-cleanup)
+
 ; Camel Case
 (global-subword-mode nil)
 
@@ -297,7 +309,7 @@
 ;; MULTIPLE CURSOR
 (require 'multiple-cursors)
 
-(global-set-key (kbd "C-;") 'set-rectangular-region-anchor)
+(global-set-key (kbd "C-;") 'mc/edit-lines)
 (global-set-key (kbd "M-s n") 'mc/mark-all-words-like-this-in-defun)
 (global-set-key (kbd "M-s M-n") 'mc/mark-all-words-like-this)
 (global-set-key (kbd "C-?") 'mc/mark-next-like-this-word)
@@ -384,7 +396,8 @@ Version 2015-05-06"
 ;; SWIPER
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
-(global-set-key "\C-s" 'swiper)
+;(global-set-key "\C-s" 'swiper)
+(global-set-key "\C-s" 'helm-swoop)
 (global-set-key (kbd "C-c j") 'counsel-git-grep)
 
 ;; JSON
@@ -553,14 +566,6 @@ Version 2015-05-06"
 (global-set-key (kbd "C-h")  'move-to-window-line-top-bottom)
 (desktop-save-mode 1)
 
-;; Emacs slow
-(which-function-mode nil)
-(setq history-length 100)
-(put 'minibuffer-history 'history-length 50)
-(put 'evil-ex-history 'history-length 50)
-(put 'kill-ring 'history-length 25)
-
-
 (global-set-key (kbd "<f12>") 'kill-some-buffers)
 (global-set-key (kbd "<f9>") 'magit-blame)
 (global-set-key (kbd "<f7>") 'magit-blame-quit)
@@ -593,7 +598,7 @@ Version 2015-05-06"
     (interactive)
     (swiper-helm (selection-or-thing-at-point)))
 
-(global-set-key (kbd "M-s .") 'swiper-helm-at-point)
+;(global-set-key (kbd "M-s .") 'swiper-helm-at-point)
 
 ;; Grep at symbol or selection point
 (defun grepme ()
@@ -602,3 +607,20 @@ Version 2015-05-06"
                      (selection-or-thing-at-point)))
 
 (global-set-key (kbd "M-¿") 'grepme)
+
+
+;; Emacs slow
+(setq history-length 100)
+(put 'minibuffer-history 'history-length 50)
+(put 'evil-ex-history 'history-length 50)
+(put 'kill-ring 'history-length 25)
+;; I want to see at most the first 4 errors for a line.
+(setq flymake-number-of-errors-to-display 4)
+;; Let's run 8 checks at once instead.
+(setq flymake-max-parallel-syntax-checks 8)
+(setq vc-handled-backends nil)
+(setq company-dabbrev-downcase 0)
+(setq company-idle-delay 0)
+
+(setq auto-window-vscroll nil)
+(global-company-mode nil)
