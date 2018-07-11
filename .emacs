@@ -12,7 +12,7 @@
 (load "package")
 (package-initialize)
 (add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
+             '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
@@ -25,6 +25,7 @@
                           nlinum
                           js2-refactor
                           xref-js2
+                          floobits
                           neotree
                           doom-themes
                           js2-mode
@@ -93,13 +94,8 @@
 ;; YASSNIPPETS
 (yas-global-mode 1)
 
-;(require 'real-auto-save)
-;(add-hook 'prog-mode-hook 'real-auto-save-mode)
-                                        ;(setq real-auto-save-interval 1) ;; in seconds
-
 (setq auto-save-default t)
 (setq auto-save-visited-file-name t)
-
 
 ;; SPHINX docstring
 ; usage C-c M-d
@@ -147,16 +143,7 @@
 (setq x-select-enable-clipboard t)
 
 ;; DISPLAY SETTINGS
-(global-nlinum-mode 1)
-;; Preset `nlinum-format' for minimum width.
-(defun my-nlinum-mode-hook ()
-  (when nlinum-mode
-    (setq-local nlinum-format
-                (concat "%" (number-to-string
-                             ;; Guesstimate number of buffer lines.
-                             (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))
-                        "d"))))
-(add-hook 'nlinum-mode-hook #'my-nlinum-mode-hook)
+(global-display-line-numbers-mode t)
 
 (setq-default frame-title-format "%b (%f)")
 (setq-default indicate-empty-lines t)
@@ -397,7 +384,7 @@ Version 2015-05-06"
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 ;(global-set-key "\C-s" 'swiper)
-(global-set-key "\C-s" 'helm-swoop)
+;(global-set-key "\C-s" 'helm-swoop)
 (global-set-key (kbd "C-c j") 'counsel-git-grep)
 
 ;; JSON
@@ -472,14 +459,6 @@ Version 2015-05-06"
 ;; DRAG-STUFF (move lines)
 (require 'drag-stuff)
 (drag-stuff-global-mode 1)
-
-(defun pru ()
-  "Move up the current line."
-  (interactive)
-  (duplicate-line)
-  (drag-stuff-up 1)
-  )
-
 (global-set-key (kbd "M-p") 'drag-stuff-up)
 (global-set-key (kbd "M-n") 'drag-stuff-down)
 
@@ -564,12 +543,10 @@ Version 2015-05-06"
 
 ;; Movement
 (global-set-key (kbd "C-h")  'move-to-window-line-top-bottom)
-(desktop-save-mode 1)
 
 (global-set-key (kbd "<f12>") 'kill-some-buffers)
 (global-set-key (kbd "<f9>") 'magit-blame)
-(global-set-key (kbd "<f7>") 'magit-blame-quit)
-
+(global-set-key (kbd "<f10>") 'magit-blame-quit)
 
 (add-to-list 'load-path "~/.emacs.d/swiper-helm")
 
@@ -598,7 +575,7 @@ Version 2015-05-06"
     (interactive)
     (swiper-helm (selection-or-thing-at-point)))
 
-;(global-set-key (kbd "M-s .") 'swiper-helm-at-point)
+(global-set-key (kbd "M-s ,") 'helm-swoop)
 
 ;; Grep at symbol or selection point
 (defun grepme ()
@@ -607,7 +584,6 @@ Version 2015-05-06"
                      (selection-or-thing-at-point)))
 
 (global-set-key (kbd "M-¿") 'grepme)
-
 
 ;; Emacs slow
 (setq history-length 100)
@@ -621,6 +597,22 @@ Version 2015-05-06"
 (setq vc-handled-backends nil)
 (setq company-dabbrev-downcase 0)
 (setq company-idle-delay 0)
-
 (setq auto-window-vscroll nil)
 (global-company-mode nil)
+(desktop-save-mode 1)
+(auto-save-visited-mode 1)
+
+;; Show the current function name in the header line
+;; (which-function-mode)
+;; (setq-default header-line-format
+;;               '((which-func-mode ("" which-func-format " "))))
+;; (setq mode-line-misc-info
+;;             ;; We remove Which Function Mode from the mode line, because it's mostly
+;;             ;; invisible here anyway.
+;;             (assq-delete-all 'which-func-mode mode-line-misc-info))
+(electric-pair-mode 1)
+(setq electric-pair-pairs '(
+                            (?\" . ?\")
+                            (?\{ . ?\})
+                            ) )
+(pixel-scroll-mode' 1)
