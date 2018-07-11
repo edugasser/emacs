@@ -301,6 +301,9 @@
 (global-set-key (kbd "M-s M-n") 'mc/mark-all-words-like-this)
 (global-set-key (kbd "C-?") 'mc/mark-next-like-this-word)
 (global-set-key (kbd "C-¿") 'mc/mark-previous-like-this-word)
+(global-set-key (kbd "C-=") 'mc/skip-to-next-like-this)
+(global-unset-key (kbd "M-<down-mouse-1>"))
+(global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
 
 ;; ;; PEP 8
 ;; (require 'py-autopep8)
@@ -585,6 +588,13 @@ Version 2015-05-06"
 
 (global-set-key (kbd "M-¿") 'grepme)
 
+;; Show the current function name in the header line
+;; (which-function-mode)
+;;             ;; We remove Which Function Mode from the mode line, because it's mostly
+;;             ;; invisible here anyway.
+;;             (assq-delete-all 'which-func-mode mode-line-misc-info))
+(electric-pair-mode 1)
+(setq electric-pair-pairs '(
 ;; Emacs slow
 (setq history-length 100)
 (put 'minibuffer-history 'history-length 50)
@@ -602,17 +612,8 @@ Version 2015-05-06"
 (desktop-save-mode 1)
 (auto-save-visited-mode 1)
 
-;; Show the current function name in the header line
-;; (which-function-mode)
-;; (setq-default header-line-format
-;;               '((which-func-mode ("" which-func-format " "))))
-;; (setq mode-line-misc-info
-;;             ;; We remove Which Function Mode from the mode line, because it's mostly
-;;             ;; invisible here anyway.
-;;             (assq-delete-all 'which-func-mode mode-line-misc-info))
-(electric-pair-mode 1)
-(setq electric-pair-pairs '(
                             (?\" . ?\")
                             (?\{ . ?\})
                             ) )
 (pixel-scroll-mode' 1)
+(setq mouse-drag-and-drop-region t)
