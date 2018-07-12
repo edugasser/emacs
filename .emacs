@@ -20,7 +20,9 @@
 
 ;; DEFINE PACKAGES
 (defvar gasser/packages '(ace-jump-mode
+                          super-save
                           real-auto-save
+                          key-chord
                           all-the-icons ;; REMBEMBER M-x all-the-icons-install-fonts
                           nlinum
                           js2-refactor
@@ -78,6 +80,10 @@
   (dolist (pkg gasser/packages)
     (when (not (package-installed-p pkg))
       (package-install pkg))))
+
+
+
+
 
 
 ;; INITIAL
@@ -587,14 +593,12 @@ Version 2015-05-06"
                      (selection-or-thing-at-point)))
 
 (global-set-key (kbd "M-¿") 'grepme)
-
-;; Show the current function name in the header line
-;; (which-function-mode)
-;;             ;; We remove Which Function Mode from the mode line, because it's mostly
-;;             ;; invisible here anyway.
-;;             (assq-delete-all 'which-func-mode mode-line-misc-info))
 (electric-pair-mode 1)
 (setq electric-pair-pairs '(
+                            (?\" . ?\")
+                            (?\{ . ?\})
+                            ) )
+
 ;; Emacs slow
 (setq history-length 100)
 (put 'minibuffer-history 'history-length 50)
@@ -610,10 +614,25 @@ Version 2015-05-06"
 (setq auto-window-vscroll nil)
 (global-company-mode nil)
 (desktop-save-mode 1)
-(auto-save-visited-mode 1)
-
-                            (?\" . ?\")
-                            (?\{ . ?\})
-                            ) )
-(pixel-scroll-mode' 1)
+(pixel-scroll-mode 1)
 (setq mouse-drag-and-drop-region t)
+
+;; Go back buffers
+(defun switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+(global-set-key (kbd "C-c b") 'switch-to-previous-buffer)
+
+;; auto-save
+;(auto-save-visited-mode 1)
+(super-save-mode +1)
+(setq super-save-auto-save-when-idle t)
+
+
+;; Show the current function name in the header line
+;; (which-function-mode)
+;;             ;; We remove Which Function Mode from the mode line, because it's mostly
+;;             ;; invisible here anyway.
+;;             (assq-delete-all 'which-func-mode mode-line-misc-info))
