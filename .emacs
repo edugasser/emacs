@@ -1,4 +1,5 @@
 ;; NOTES
+; C-c C-o show def/class
 ; C-u C-SPACE mark ring previous
 ; C-x C-x return last ring
 ; C-SPC set mark
@@ -21,6 +22,8 @@
 ;; DEFINE PACKAGES
 (defvar gasser/packages '(ace-jump-mode
                           super-save
+                          expand-region
+                          smartscan
                           real-auto-save
                           key-chord
                           all-the-icons ;; REMBEMBER M-x all-the-icons-install-fonts
@@ -35,6 +38,7 @@
                           spaceline
                           auto-complete
                           anaconda-mode
+                          sr-speedbar
                           autopair
                           clojure-mode
                           coffee-mode
@@ -58,13 +62,16 @@
                           puppet-mode
                           py-autopep8
                           pylint
+			  ;pymacs
                           solarized-theme
+                          vimish-fold
                           swiper
                           web-mode
                           writegood-mode
                           undo-tree
                           yaml-mode
                           yasnippet
+                          dumb-jump
                           yasnippet-snippets)
   "Default packages")
 
@@ -82,23 +89,24 @@
       (package-install pkg))))
 
 
-
-
-
-
 ;; INITIAL
 (setq inhibit-splash-screen t
       initial-scratch-message nil)
 (switch-to-buffer (get-buffer-create "emtpy"))
 (delete-other-windows)
 
-;; Key Freq
-;(require 'keyfreq)
-;(keyfreq-mode 1)
-;(keyfreq-autosave-mode 1)
+
+;; Jump to definition
+(dumb-jump-mode 1)
+
+;;keybindings execute faster
+(key-chord-mode +1)
 
 ;; YASSNIPPETS
 (yas-global-mode 1)
+
+;; Smartscan
+(smartscan-mode 1)
 
 (setq auto-save-default t)
 (setq auto-save-visited-file-name t)
@@ -189,8 +197,6 @@
   (yank)
 )
 
-;(global-set-key (kbd "RET") 'newline-and-indent)
-(global-set-key (kbd "C-M-d") 'duplicate-line)
 
 ;; UNDO REDO
 (global-set-key (kbd "C-z") 'undo-tree-undo)
@@ -202,7 +208,7 @@
 (show-paren-mode t)
 (require 'autopair)
 (setq-default show-trailing-whitespace t)
-                                        ;(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
@@ -321,9 +327,17 @@
 
 ;; JEDI
 (require 'jedi)
+
+(setq jedi:server-args
+      '("--virtual-env" "/home/gasser/virtualenvs/bookcore/"
+        ))
+
+(setq jedi:server-args
+      '("--sys-path" "/home/gasser/virtualenvs/bookcore/lib/python2.7/site-packages/"
+        ))
+
 (add-hook 'python-mode-hook 'jedi:setup)
 (add-hook 'python-mode-hook 'jedi:ac-setup)
-(add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)                 ; optional
 
 
@@ -373,7 +387,6 @@ Version 2015-05-06"
         (message "buffer text copied")
       (message "text copied"))))
 
-(global-set-key (kbd "C-M-c") 'xah-copy-line-or-region)
 
 ;; DUPLICATE LINE
 ;; ; duplicate line
@@ -386,14 +399,13 @@ Version 2015-05-06"
   (next-line 1)
   (yank)
 )
-(global-set-key (kbd "C-x d") 'duplicate-line)
+(global-set-key (kbd "C-M-d") 'duplicate-line)
 (global-set-key (kbd "C-x SPC") 'rectangle-mark-mode)
 
 ;; SWIPER
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 ;(global-set-key "\C-s" 'swiper)
-;(global-set-key "\C-s" 'helm-swoop)
 (global-set-key (kbd "C-c j") 'counsel-git-grep)
 
 ;; JSON
@@ -457,7 +469,7 @@ Version 2015-05-06"
     ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(package-selected-packages
    (quote
-    (ace-window flymake-python-pyflakes yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
+    (jedi ace-window flymake-python-pyflakes yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -501,7 +513,7 @@ Version 2015-05-06"
 (global-set-key (kbd "C-o") 'open-next-line)
 
 (defun open-previous-line (arg)
-  "Open a new line before the current one.
+  "1Open a new line before the current one.
      See also `newline-and-indent'."
   (interactive "p")
   (beginning-of-line)
@@ -511,6 +523,8 @@ Version 2015-05-06"
 
 (global-set-key (kbd "M-o") 'open-previous-line)
 (global-set-key (kbd "C-M-k") 'kill-whole-line)
+(global-set-key (kbd "M-2") 'er/expand-region)
+(global-set-key (kbd "M-3") 'er/mark-inside-quotes)
 
 ;; Autoindent open-*-lines
 (defvar newline-and-indent t
@@ -614,7 +628,6 @@ Version 2015-05-06"
 (setq auto-window-vscroll nil)
 (global-company-mode nil)
 (desktop-save-mode 1)
-(pixel-scroll-mode 1)
 (setq mouse-drag-and-drop-region t)
 
 ;; Go back buffers
@@ -630,9 +643,45 @@ Repeated invocations toggle between the two most recently open buffers."
 (super-save-mode +1)
 (setq super-save-auto-save-when-idle t)
 
-
 ;; Show the current function name in the header line
 ;; (which-function-mode)
 ;;             ;; We remove Which Function Mode from the mode line, because it's mostly
 ;;             ;; invisible here anyway.
 ;;             (assq-delete-all 'which-func-mode mode-line-misc-info))
+(key-chord-define-global "yy" 'xah-copy-line-or-region)
+(global-auto-revert-mode nil)
+(global-set-key (kbd "C-S-n") 'smartscan-symbol-go-forward)
+(global-set-key (kbd "C-S-p") 'smartscan-symbol-go-backward)
+(global-set-key (kbd "C-S-'") 'smartscan-symbol-replace)
+
+;; (defun project-directory (buffer-name)
+;;   "Return the root directory of the project that contain the
+;; given BUFFER-NAME. Any directory with a .git or .jedi file/directory
+;; is considered to be a project root."
+;;   (interactive)
+;;   (let ((root-dir (file-name-directory buffer-name)))
+;;     (while (and root-dir
+;;                 (not (file-exists-p (concat root-dir ".git")))
+;;                 (not (file-exists-p (concat root-dir ".jedi"))))
+;;       (setq root-dir
+;;             (if (equal root-dir "/")
+;;                 nil
+;;               (file-name-directory (directory-file-name root-dir)))))
+;;     root-dir))
+
+;; (defun project-name (buffer-name)
+;;   "Return the name of the project that contain the given BUFFER-NAME."
+;;   (let ((root-dir (project-directory buffer-name)))
+;;     (if root-dir
+;;         (file-name-nondirectory
+;;          (directory-file-name root-dir))
+;;       nil)))
+
+;; (defun jedi-setup-venv ()
+;;   "Activates the virtualenv of the current buffer."
+;;   (let ((project-name (project-name buffer-file-name)))
+;;     (when project-name (venv-workon project-name))))
+
+;; (setq jedi:setup-keys t)
+;; (add-hook 'python-mode-hook 'jedi-setup-venv)
+;; (add-hook 'python-mode-hook 'jedi:setup)
