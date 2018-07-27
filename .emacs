@@ -19,6 +19,9 @@
 
 (setq package-archive-enable-alist '(("melpa" deft magit)))
 
+
+
+
 ;; DEFINE PACKAGES
 (defvar gasser/packages '(ace-jump-mode
                           super-save
@@ -62,7 +65,7 @@
                           puppet-mode
                           py-autopep8
                           pylint
-			  ;pymacs
+                          ;pymacs
                           solarized-theme
                           vimish-fold
                           swiper
@@ -94,7 +97,6 @@
       initial-scratch-message nil)
 (switch-to-buffer (get-buffer-create "emtpy"))
 (delete-other-windows)
-
 
 ;; Jump to definition
 (dumb-jump-mode 1)
@@ -523,14 +525,14 @@ Version 2015-05-06"
 
 (global-set-key (kbd "M-o") 'open-previous-line)
 (global-set-key (kbd "C-M-k") 'kill-whole-line)
-(global-set-key (kbd "M-2") 'er/expand-region)
-(global-set-key (kbd "M-3") 'er/mark-inside-quotes)
+(global-set-key (kbd "M-ñ") 'er/expand-region)
+(global-set-key (kbd "M-l") 'er/mark-inside-quotes)
 
-;; Autoindent open-*-lines
+;; autoindent open-*-lines
 (defvar newline-and-indent t
-  "Modify the behavior of the open-*-line functions to cause them to autoindent.")
+  "modify the behavior of the open-*-line functions to cause them to autoindent.")
 
-;; JS Framework
+;; js framework
 (require 'js2-mode)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
@@ -653,35 +655,3 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-S-n") 'smartscan-symbol-go-forward)
 (global-set-key (kbd "C-S-p") 'smartscan-symbol-go-backward)
 (global-set-key (kbd "C-S-'") 'smartscan-symbol-replace)
-
-;; (defun project-directory (buffer-name)
-;;   "Return the root directory of the project that contain the
-;; given BUFFER-NAME. Any directory with a .git or .jedi file/directory
-;; is considered to be a project root."
-;;   (interactive)
-;;   (let ((root-dir (file-name-directory buffer-name)))
-;;     (while (and root-dir
-;;                 (not (file-exists-p (concat root-dir ".git")))
-;;                 (not (file-exists-p (concat root-dir ".jedi"))))
-;;       (setq root-dir
-;;             (if (equal root-dir "/")
-;;                 nil
-;;               (file-name-directory (directory-file-name root-dir)))))
-;;     root-dir))
-
-;; (defun project-name (buffer-name)
-;;   "Return the name of the project that contain the given BUFFER-NAME."
-;;   (let ((root-dir (project-directory buffer-name)))
-;;     (if root-dir
-;;         (file-name-nondirectory
-;;          (directory-file-name root-dir))
-;;       nil)))
-
-;; (defun jedi-setup-venv ()
-;;   "Activates the virtualenv of the current buffer."
-;;   (let ((project-name (project-name buffer-file-name)))
-;;     (when project-name (venv-workon project-name))))
-
-;; (setq jedi:setup-keys t)
-;; (add-hook 'python-mode-hook 'jedi-setup-venv)
-;; (add-hook 'python-mode-hook 'jedi:setup)
