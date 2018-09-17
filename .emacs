@@ -9,6 +9,10 @@
 ; M-r anaconda-mode-find-references
 ; m-, anaconda-mode-find-assignments
 ; pip install flake8!
+; alias ..="cd .." \
+;      ...="cd ../.." \
+;      ....="cd ../../.." \
+;      .....="cd ../../../.."
 
 (load "package")
 (package-initialize)
@@ -29,6 +33,25 @@
                           smartscan
                           real-auto-save
                           key-chord
+                          elpy
+                          fill-column-indicator
+                          fiplr
+                          flycheck
+                          helm
+                          helm-swoop
+                          htmlize
+                          importmagic
+                          jedi
+                          json-mode
+                          magit
+                          marmalade
+                          multiple-cursors
+                          keyfreq
+                          php-mode
+                          puppet-mode
+                          pyvenv
+                          py-autopep8
+                          pylint
                           all-the-icons ;; REMBEMBER M-x all-the-icons-install-fonts
                           nlinum
                           js2-refactor
@@ -47,25 +70,6 @@
                           coffee-mode
                           counsel
                           drag-stuff
-                          elpy
-                          fill-column-indicator
-                          fiplr
-                          flycheck
-                          helm
-                          helm-swoop
-                          htmlize
-                          importmagic
-                          jedi
-                          json-mode
-                          magit
-                          marmalade
-                          multiple-cursors
-                          keyfreq
-                          php-mode
-                          puppet-mode
-                          py-autopep8
-                          pylint
-                          ;pymacs
                           solarized-theme
                           vimish-fold
                           swiper
@@ -330,14 +334,6 @@
 ;; JEDI
 (require 'jedi)
 
-(setq jedi:server-args
-      '("--virtual-env" "/home/gasser/virtualenvs/bookcore/"
-        ))
-
-(setq jedi:server-args
-      '("--sys-path" "/home/gasser/virtualenvs/bookcore/lib/python2.7/site-packages/"
-        ))
-
 (add-hook 'python-mode-hook 'jedi:setup)
 (add-hook 'python-mode-hook 'jedi:ac-setup)
 (setq jedi:complete-on-dot t)                 ; optional
@@ -455,9 +451,7 @@ Version 2015-05-06"
       (hs-show-all))))
 
 
-;; ELPY
 (elpy-enable)
-; al acceder a una funcion que no haya tiempo limite
 (setq elpy-rpc-timeout nil)
 
 ;; AUTO GENERATE
@@ -488,8 +482,6 @@ Version 2015-05-06"
 ;; Highlight the line we are currently on
 (global-hl-line-mode t)
 (delete 'elpy-module-highlight-indentation elpy-modules)
-
-(setq default-directory "~/roi/bookcore/" )
 
 (put 'scroll-left 'disabled nil)
 
@@ -655,3 +647,6 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-S-n") 'smartscan-symbol-go-forward)
 (global-set-key (kbd "C-S-p") 'smartscan-symbol-go-backward)
 (global-set-key (kbd "C-S-'") 'smartscan-symbol-replace)
+
+;; Activate bookcore virtualenv
+(pyvenv-activate "~/virtualenvs/bookcore/")
