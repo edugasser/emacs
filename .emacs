@@ -9,6 +9,10 @@
 ; M-r anaconda-mode-find-references
 ; m-, anaconda-mode-find-assignments
 ; pip install flake8!
+; alias ..="cd .." \
+;      ...="cd ../.." \
+;      ....="cd ../../.." \
+;      .....="cd ../../../.."
 
 (load "package")
 (package-initialize)
@@ -19,6 +23,9 @@
 
 (setq package-archive-enable-alist '(("melpa" deft magit)))
 
+
+
+
 ;; DEFINE PACKAGES
 (defvar gasser/packages '(ace-jump-mode
                           super-save
@@ -26,6 +33,25 @@
                           smartscan
                           real-auto-save
                           key-chord
+                          elpy
+                          fill-column-indicator
+                          fiplr
+                          flycheck
+                          helm
+                          helm-swoop
+                          htmlize
+                          importmagic
+                          jedi
+                          json-mode
+                          magit
+                          marmalade
+                          multiple-cursors
+                          keyfreq
+                          php-mode
+                          puppet-mode
+                          pyvenv
+                          py-autopep8
+                          pylint
                           all-the-icons ;; REMBEMBER M-x all-the-icons-install-fonts
                           nlinum
                           js2-refactor
@@ -44,25 +70,6 @@
                           coffee-mode
                           counsel
                           drag-stuff
-                          elpy
-                          fill-column-indicator
-                          fiplr
-                          flycheck
-                          helm
-                          helm-swoop
-                          htmlize
-                          importmagic
-                          jedi
-                          json-mode
-                          magit
-                          marmalade
-                          multiple-cursors
-                          keyfreq
-                          php-mode
-                          puppet-mode
-                          py-autopep8
-                          pylint
-			  ;pymacs
                           solarized-theme
                           vimish-fold
                           swiper
@@ -94,7 +101,6 @@
       initial-scratch-message nil)
 (switch-to-buffer (get-buffer-create "emtpy"))
 (delete-other-windows)
-
 
 ;; Jump to definition
 (dumb-jump-mode 1)
@@ -328,14 +334,6 @@
 ;; JEDI
 (require 'jedi)
 
-(setq jedi:server-args
-      '("--virtual-env" "/home/gasser/virtualenvs/bookcore/"
-        ))
-
-(setq jedi:server-args
-      '("--sys-path" "/home/gasser/virtualenvs/bookcore/lib/python2.7/site-packages/"
-        ))
-
 (add-hook 'python-mode-hook 'jedi:setup)
 (add-hook 'python-mode-hook 'jedi:ac-setup)
 (setq jedi:complete-on-dot t)                 ; optional
@@ -453,9 +451,7 @@ Version 2015-05-06"
       (hs-show-all))))
 
 
-;; ELPY
 (elpy-enable)
-; al acceder a una funcion que no haya tiempo limite
 (setq elpy-rpc-timeout nil)
 
 ;; AUTO GENERATE
@@ -486,8 +482,6 @@ Version 2015-05-06"
 ;; Highlight the line we are currently on
 (global-hl-line-mode t)
 (delete 'elpy-module-highlight-indentation elpy-modules)
-
-(setq default-directory "~/roi/bookcore/" )
 
 (put 'scroll-left 'disabled nil)
 
@@ -523,14 +517,14 @@ Version 2015-05-06"
 
 (global-set-key (kbd "M-o") 'open-previous-line)
 (global-set-key (kbd "C-M-k") 'kill-whole-line)
-(global-set-key (kbd "M-2") 'er/expand-region)
-(global-set-key (kbd "M-3") 'er/mark-inside-quotes)
+(global-set-key (kbd "M-ñ") 'er/expand-region)
+(global-set-key (kbd "M-l") 'er/mark-inside-quotes)
 
-;; Autoindent open-*-lines
+;; autoindent open-*-lines
 (defvar newline-and-indent t
-  "Modify the behavior of the open-*-line functions to cause them to autoindent.")
+  "modify the behavior of the open-*-line functions to cause them to autoindent.")
 
-;; JS Framework
+;; js framework
 (require 'js2-mode)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
@@ -654,34 +648,5 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-S-p") 'smartscan-symbol-go-backward)
 (global-set-key (kbd "C-S-'") 'smartscan-symbol-replace)
 
-;; (defun project-directory (buffer-name)
-;;   "Return the root directory of the project that contain the
-;; given BUFFER-NAME. Any directory with a .git or .jedi file/directory
-;; is considered to be a project root."
-;;   (interactive)
-;;   (let ((root-dir (file-name-directory buffer-name)))
-;;     (while (and root-dir
-;;                 (not (file-exists-p (concat root-dir ".git")))
-;;                 (not (file-exists-p (concat root-dir ".jedi"))))
-;;       (setq root-dir
-;;             (if (equal root-dir "/")
-;;                 nil
-;;               (file-name-directory (directory-file-name root-dir)))))
-;;     root-dir))
-
-;; (defun project-name (buffer-name)
-;;   "Return the name of the project that contain the given BUFFER-NAME."
-;;   (let ((root-dir (project-directory buffer-name)))
-;;     (if root-dir
-;;         (file-name-nondirectory
-;;          (directory-file-name root-dir))
-;;       nil)))
-
-;; (defun jedi-setup-venv ()
-;;   "Activates the virtualenv of the current buffer."
-;;   (let ((project-name (project-name buffer-file-name)))
-;;     (when project-name (venv-workon project-name))))
-
-;; (setq jedi:setup-keys t)
-;; (add-hook 'python-mode-hook 'jedi-setup-venv)
-;; (add-hook 'python-mode-hook 'jedi:setup)
+;; Activate bookcore virtualenv
+(pyvenv-activate "~/virtualenvs/bookcore/")
