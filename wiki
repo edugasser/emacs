@@ -1,0 +1,97 @@
+* Resize photos
+for file in *.jpg; do convert $file -resize 40% r; done
+
+
+* Comprimir el fichero en zip  y luego partirlo en multiples
+FAT no permite más de 4gb de transferencia por mucho que se comrima o splitee.
+$ zip Downsizing.2017.1080p-dual-lat-cinecalidad.to.mp4.zip --out down.zip -s 1g
+sino keka (no sirve)
+sino split y cat:
+split -b 1024m "YourFile.iso" "YourFile.iso."
+cat YourFile.iso.* > YourFile.iso
+
+* Mapear tecla CAPS a Control
+/usr/share/X11/xkb/symbols/es
+xkb_symbols "basic" {
+..
+    replace key <CAPS>  {  [ Control_L, Control_L ] };
+    modifier_map  Control { <CAPS>, <LCTL> };
+..
+}
+
+* Emacs
+git@github.com:edugasser/emacs.git
+apt-get install libncurses-dev
+sudo apt-get install build-essential texinfo libx11-dev libxpm-dev libjpeg-dev libpng-dev libgif-dev libtiff-dev libgtk2.0-dev libncurses-dev
+http://ftp.rediris.es/mirror/GNU/emacs/
+
+* Xrvt terminal
+$ sudo apt-get install rxvt-unicode
+
+* Mapeo de teclas en Macosx
+
+keycode 37 =	Control_L
+keycode 133 =   Alt_L Meta_L
+keycode 64 =	Super_L
+keycode 108 =   Super_R
+keycode 134 =   ISO_Level3_Shift Multi_key
+keycode 105 =   Control_R   	Multi_key
+clear Shift
+clear Lock
+clear Control
+clear Mod1
+clear Mod2
+clear Mod3
+clear Mod4
+clear Mod5
+add	Shift   = Shift_L Shift_R
+add	Lock	= Caps_Lock
+add	Control = Control_L Control_R
+add	Mod1	= Alt_L 0x007D
+!some configurations, for example tha italian layout keyboard, will require this:
+!add	Mod1	= Alt_L
+!because the "0x007D" will assign the "+*]" key to the unity menu
+add	Mod2	= Num_Lock
+add	Mod4	= Super_L Super_R
+add	Mod5	= Mode_switch ISO_Level3_Shift ISO_Level3_Shift ISO_Level3_Shift
+
+! Configure '=' key on numpad as '='.
+keycode 0x7D =  equal
+
+* Access to mysql
+mysql -u root -p
+
+Python 3 y django 2
+
+sudo apt-get install python3
+sudo apt-get install -y python3-pip
+pip3 install virtualenv
+virtualenv env --python=python3.5
+. env/bin/activate
+ pip3 install django
+
+
+* Boot Refit macosx
+https://www.youtube.com/watch?v=dGLzWPD4LjQ
+http://refit.sourceforge.net/
+Si eso no funciona...
+h t t p s : //sourceforge.net/projects/refind/files/0.11.2/
+command + r -> disk utilidades -> montar disco desde interfaz
+luego ir a la terminal .. /Volumes/*/User/*/install-refind
+
+* I3
+sudo apt install i3
+
+* PSQL
+sudo apt-get install postgresql postgresql-contrib postgresql-client-common
+sudo apt-get install postgresql-client
+install psycopg2
+
+# change password postgres
+psql -U postgres
+\password postgres
+
+# create user grant privilages
+create user pastoreav2;
+alter user pastoreav2  with encrypted password 'pastoreav2';
+grant all privileges on database <dbname> to <username> ;
