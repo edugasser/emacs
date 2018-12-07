@@ -19,7 +19,7 @@
 (add-to-list 'package-archives
              '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "https://melpa.org/packages/") t)
 
 (setq package-archive-enable-alist '(("melpa" deft magit)))
 
@@ -32,7 +32,6 @@
                           expand-region
                           smartscan
                           real-auto-save
-                          key-chord
                           elpy
                           fill-column-indicator
                           fiplr
@@ -79,6 +78,9 @@
                           yaml-mode
                           yasnippet
                           dumb-jump
+                          virtualenvwrapper
+                          xcscope
+                          helm-cscope
                           yasnippet-snippets)
   "Default packages")
 
@@ -102,11 +104,10 @@
 (switch-to-buffer (get-buffer-create "emtpy"))
 (delete-other-windows)
 
+(add-to-list 'load-path "~/.emacs.d/lisp")
+
 ;; Jump to definition
 (dumb-jump-mode 1)
-
-;;keybindings execute faster
-(key-chord-mode +1)
 
 ;; YASSNIPPETS
 (yas-global-mode 1)
@@ -465,7 +466,7 @@ Version 2015-05-06"
     ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(package-selected-packages
    (quote
-    (jedi ace-window flymake-python-pyflakes yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
+    (pyenv-mode realgud rope-read-mode jedi ace-window flymake-python-pyflakes yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -485,7 +486,7 @@ Version 2015-05-06"
 
 (put 'scroll-left 'disabled nil)
 
-(add-to-list 'load-path "~/.emacs.d/lisp")
+
 
 ;; Neo tree
 (global-set-key [f8] 'neotree-toggle)
@@ -565,7 +566,6 @@ Version 2015-05-06"
 (global-set-key (kbd "<f9>") 'magit-blame)
 (global-set-key (kbd "<f10>") 'magit-blame-quit)
 
-(add-to-list 'load-path "~/.emacs.d/swiper-helm")
 
 (defun selection-or-thing-at-point ()
   (cond
@@ -642,7 +642,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;             ;; We remove Which Function Mode from the mode line, because it's mostly
 ;;             ;; invisible here anyway.
 ;;             (assq-delete-all 'which-func-mode mode-line-misc-info))
-(key-chord-define-global "yy" 'xah-copy-line-or-region)
 (global-auto-revert-mode nil)
 (global-set-key (kbd "C-S-n") 'smartscan-symbol-go-forward)
 (global-set-key (kbd "C-S-p") 'smartscan-symbol-go-backward)
@@ -650,3 +649,22 @@ Repeated invocations toggle between the two most recently open buffers."
 
 ;; Activate bookcore virtualenv
 (pyvenv-activate "~/virtualenvs/bookcore/")
+
+(cscope-minor-mode 1)
+(global-set-key (kbd "M-t") 'cscope-find-global-definition-no-prompting)
+
+(defun my-put-file-name-on-clipboard ()
+  "Put the current file name on the clipboard"
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (with-temp-buffer
+        (insert filename)
+        (clipboard-kill-region (point-min) (point-max)))
+      (message filename))))
+
+;; Copy current file buffer
+(global-unset-key (kbd "M-<down-mouse-3>"))
+(global-set-key (kbd "M-<mouse-3>") 'my-put-file-name-on-clipboard)
