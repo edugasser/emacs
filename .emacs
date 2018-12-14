@@ -144,6 +144,7 @@
 ;font										;
 (set-face-attribute 'default nil :height 117 :width 'semi-condensed)
 ;; set font for all windows. keep window size fixed
+(set-frame-font "Droid Sans Mono-10" nil t)
 ;(set-frame-font "DejaVu Sans Mono-10" nil t)
 ;(set-frame-font "Source Code Pro-10" nil t)
 ;(set-frame-font "Inconsolata-11" t t)
@@ -668,3 +669,5 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Copy current file buffer
 (global-unset-key (kbd "M-<down-mouse-3>"))
 (global-set-key (kbd "M-<mouse-3>") 'my-put-file-name-on-clipboard)
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
