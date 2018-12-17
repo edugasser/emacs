@@ -34,7 +34,7 @@ URxvt*font: xft:DeJavu Sans Mono:pixelsize=12
 URxvt*boldFont: xft:DeJavu Sans Mono:pixelsize=12
 
 ! Fix font space
-URxvt*letterSpace: -1
+URxvt*LETTERsPAce: -332
 
 ! Scrollbar
 URxvt.scrollStyle:          rxvt
@@ -73,11 +73,11 @@ URxvt*jumpScroll:           true
 ! skip scrolling
 URxvt*skipScroll:           false
 ! scroll to bottom on output
-URxvt*scrollTtyOutput:      true
+URxvt*scrollTtyOutput:      false
 ! scroll to bottom when a non-special key is pressed
-URxvt*scrollTtyKeypress:    false
+URxvt*scrollTtyKeypress:    true
 ! scroll to bottom when tty receives new lines
-URxvt*scrollWithBuffer:     false
+URxvt*scrollWithBuffer:     true
 ! scroll page by page
 URxvt*mouseWheelScrollPage: false
 
@@ -177,3 +177,8 @@ URxvt.keysym.C-equal:   perl:font-size:increase
 URxvt.keysym.C-minus:   perl:font-size:decrease
 URxvt.keysym.C-S-equal: perl:font-size:incglobal
 URxvt.keysym.C-S-minus: perl:font-size:decglobal
+
+Emacs.FontBackend: xft
+Emacs.font: Monaco:size=14:antialias=true:hinting=true:autohint=false:hintstyle=3:spacing=100
+!Emacs.letterSpace: 2 
+!URxvt.letterSpace: 2
