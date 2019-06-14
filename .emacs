@@ -16,7 +16,6 @@
 
 (load "package")
 (package-initialize)
-(add-to-list 'package-archives
              '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
@@ -24,11 +23,13 @@
 (setq package-archive-enable-alist '(("melpa" deft magit)))
 
 
+(add-to-list 'package-archives
 
 
 ;; DEFINE PACKAGES
 (defvar gasser/packages '(ace-jump-mode
                           super-save
+                          dockerfile-mode
                           expand-region
                           smartscan
                           real-auto-save
@@ -43,6 +44,7 @@
                           jedi
                           json-mode
                           magit
+                          git-timemachine
                           marmalade
                           multiple-cursors
                           keyfreq
@@ -58,9 +60,12 @@
                           floobits
                           neotree
                           doom-themes
+                          crux
                           js2-mode
                           sphinx-doc
+                          git-gutter
                           spaceline
+                          projectile
                           auto-complete
                           anaconda-mode
                           sr-speedbar
@@ -142,12 +147,15 @@
           )
 
 ;font										;
-(set-face-attribute 'default nil :height 117 :width 'semi-condensed)
-;; set font for all windows. keep window size fixed
-(set-frame-font "Droid Sans Mono-10" nil t)
+(set-face-attribute 'default nil :height 117 :width 'normal)
+;;; menu-set-font !
+;(set-frame-font "Droid Sans Mono-10.8" nil t)
+;(set-frame-font "Droid Sans Mono-10.8" nil t)
 ;(set-frame-font "DejaVu Sans Mono-10" nil t)
 ;(set-frame-font "Source Code Pro-10" nil t)
+;(set-frame-font "Operator Mono Light-13" nil t)
 ;(set-frame-font "Inconsolata-11" t t)
+;(set-frame-font "Consolas" t t)
 
 
 (tool-bar-mode -1)
@@ -464,16 +472,16 @@ Version 2015-05-06"
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+    ("75d3dde259ce79660bac8e9e237b55674b910b470f313cdf4b019230d01a982a" "d2e9c7e31e574bf38f4b0fb927aaff20c1e5f92f72001102758005e53d77b8c9" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" "8aca557e9a17174d8f847fb02870cb2bb67f3b6e808e46c0e54a44e3e18e1020" "d1b4990bd599f5e2186c3f75769a2c5334063e9e541e37514942c27975700370" "6d589ac0e52375d311afaa745205abb6ccb3b21f6ba037104d71111e7e76a3fc" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "4697a2d4afca3f5ed4fdf5f715e36a6cac5c6154e105f3596b44a4874ae52c45" "100e7c5956d7bb3fd0eebff57fde6de8f3b9fafa056a2519f169f85199cc1c96" "f0dc4ddca147f3c7b1c7397141b888562a48d9888f1595d69572db73be99a024" "7e78a1030293619094ea6ae80a7579a562068087080e01c2b8b503b27900165c" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(package-selected-packages
    (quote
-    (pyenv-mode realgud rope-read-mode jedi ace-window flymake-python-pyflakes yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
+    (dart-mode pyenv-mode realgud rope-read-mode jedi ace-window flymake-python-pyflakes yasnippet-snippets hydra yaml-mode writegood-mode web-mode solarized-theme puppet-mode php-mode marmalade magit htmlize flycheck coffee-mode clojure-mode autopair auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(hl-line ((t (:background "#073642" :weight light :height 1.0 :width normal)))))
 
 ;; DRAG-STUFF (move lines)
 (require 'drag-stuff)
@@ -491,6 +499,7 @@ Version 2015-05-06"
 
 ;; Neo tree
 (global-set-key [f8] 'neotree-toggle)
+(global-set-key [f6] 'git-timemachine)
 
 ;;EMACS so slow? Adjust the idle delay before which eldoc ask for documentation under point with:
 (setq eldoc-idle-delay 1)  ;; in second
@@ -671,3 +680,12 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "M-<mouse-3>") 'my-put-file-name-on-clipboard)
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
+
+;;By default Emacs doesn't read from the same environment variables set in your terminal.
+
+(global-git-gutter-mode +1)
+(add-hook 'python-mode-hook 'git-gutter-mode)
+
+(global-set-key (kbd "C-a") 'crux-move-beginning-of-line)
+(global-set-key (kbd "C-c h") 'find-grep-dired)
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
